@@ -30,8 +30,8 @@ app.post("/api/user", (req, res) => {
 });
 
 app.get("/api/user/:Id", (req, res, next) => {
-  const movieId = req.params.Id;
-  console.log(`Movie met ID ${movieId} gezocht`);
+  const Id = req.params.Id;
+  console.log(`User met ID ${Id} gezocht`);
   let user = database.filter((item) => item.id == Id);
   if (user.length > 0) {
     console.log(user);
@@ -42,7 +42,7 @@ app.get("/api/user/:Id", (req, res, next) => {
   } else {
     res.status(401).json({
       status: 401,
-      result: `Movie with ID ${movieId} not found`,
+      result: `User with ID ${Id} not found`,
     });
   }
 });
