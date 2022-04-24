@@ -54,17 +54,6 @@ app.get("/api/user", (req, res, next) => {
   });
 });
 
-app.all("*", (req, res) => {
-  res.status(401).json({
-    status: 401,
-    result: "End-point not found",
-  });
-});
-
-app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`);
-});
-
 app.delete("/api/user/:Id", (req, res, next) => {
   const Id = req.params.Id;
   let user = database.filter((item) => item.id == Id);
@@ -80,4 +69,15 @@ app.delete("/api/user/:Id", (req, res, next) => {
       result: "user with id " + Id + "not found",
     });
   }
+});
+
+app.all("*", (req, res) => {
+  res.status(401).json({
+    status: 401,
+    result: "End-point not found",
+  });
+});
+
+app.listen(port, () => {
+  console.log(`Example app listening on port ${port}`);
 });
