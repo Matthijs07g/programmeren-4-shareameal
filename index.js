@@ -60,7 +60,7 @@ app.put("/api/user/:Id", (req, res, next) => {
   let info = req.body;
   info = {
     Id,
-    ...user,
+    ...info,
   };
   if (user.length > 0) {
     database.shift(user);
