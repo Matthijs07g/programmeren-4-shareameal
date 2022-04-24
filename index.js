@@ -64,3 +64,21 @@ app.all("*", (req, res) => {
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
 });
+
+app.delete("/api/user/:Id", (req, res, next) => {
+  const Id = req.params.Id;
+  let user = database.filter((item) => item.id == Id);
+  if (user.length > 0) {
+    console.log("The user with id: ", Id, "will be deleted");
+    database.shift(user);
+    res.status(201).json({
+      status: 201,
+      result: database,
+    });
+  } else {
+    res.status(401).json({
+      status: 401,
+      result: "user with id " + Id + "not found",
+    });
+  }
+});
