@@ -54,6 +54,29 @@ app.get("/api/user", (req, res, next) => {
   });
 });
 
+app.put("api/user/:Id", (req, res, next) => {
+  const Id = req.params.Id;
+  let user = database.filter((item) => item.id == Id);
+  let info = req.body;
+  info = {
+    Id,
+    ...user,
+  };
+  if (user.length > 0) {
+    database.shift(user);
+    database.push(info);
+    res.status(200).json({
+      status: 200,
+      result: user,
+    });
+  } else {
+    res.status(401).json({
+      status: 401,
+      result: "User not found",
+    });
+  }
+});
+
 app.delete("/api/user/:Id", (req, res, next) => {
   const Id = req.params.Id;
   let user = database.filter((item) => item.id == Id);
@@ -66,7 +89,7 @@ app.delete("/api/user/:Id", (req, res, next) => {
   } else {
     res.status(401).json({
       status: 401,
-      result: "user with id " + Id + "not found",
+      result: "user with id " + Id + " not found",
     });
   }
 });
