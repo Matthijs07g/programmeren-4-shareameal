@@ -14,12 +14,12 @@ app.all("*", (req, res, next) => {
   next();
 });
 
-app.get("/", (req, res) => {
+/*app.get("/", (req, res) => {
   res.status(200).json({
     status: 200,
     result: "Hello World",
   });
-});
+});*/
 
 app.post("/api/movie", (req, res) => {
   let movie = req.body;
@@ -54,8 +54,8 @@ app.get("/api/movie/:movieId", (req, res, next) => {
   }
 });
 
-app.get("/api/movie", (req, res, next) => {
-  res.status(200).json({
+app.get("/api/users", (req, res, next) => {
+  res.status(200)({
     status: 200,
     result: database,
   });
