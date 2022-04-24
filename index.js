@@ -14,37 +14,30 @@ app.all("*", (req, res, next) => {
   next();
 });
 
-/*app.get("/", (req, res) => {
-  res.status(200).json({
-    status: 200,
-    result: "Hello World",
-  });
-});*/
-
-app.post("/api/movie", (req, res) => {
-  let movie = req.body;
+app.post("/api/user", (req, res) => {
+  let user = req.body;
   id++;
-  movie = {
+  user = {
     id,
-    ...movie,
+    ...user,
   };
-  console.log(movie);
-  database.push(movie);
+  console.log(user);
+  database.push(user);
   res.status(201).json({
     status: 201,
     result: database,
   });
 });
 
-app.get("/api/movie/:movieId", (req, res, next) => {
-  const movieId = req.params.movieId;
+app.get("/api/user/:Id", (req, res, next) => {
+  const movieId = req.params.Id;
   console.log(`Movie met ID ${movieId} gezocht`);
-  let movie = database.filter((item) => item.id == movieId);
-  if (movie.length > 0) {
-    console.log(movie);
+  let user = database.filter((item) => item.id == Id);
+  if (user.length > 0) {
+    console.log(user);
     res.status(200).json({
       status: 200,
-      result: movie,
+      result: user,
     });
   } else {
     res.status(401).json({
@@ -54,7 +47,7 @@ app.get("/api/movie/:movieId", (req, res, next) => {
   }
 });
 
-app.get("/api/users", (req, res, next) => {
+app.get("/api/user", (req, res, next) => {
   res.status(200).json({
     status: 200,
     result: database,
