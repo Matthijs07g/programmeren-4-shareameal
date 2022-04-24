@@ -54,7 +54,7 @@ app.get("/api/user", (req, res, next) => {
   });
 });
 
-app.put("api/user/:Id", (req, res, next) => {
+app.put("/api/user/:Id", (req, res, next) => {
   const Id = req.params.Id;
   let user = database.filter((item) => item.id == Id);
   let info = req.body;
