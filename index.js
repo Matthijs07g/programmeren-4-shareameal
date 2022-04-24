@@ -69,7 +69,6 @@ app.delete("/api/user/:Id", (req, res, next) => {
   const Id = req.params.Id;
   let user = database.filter((item) => item.id == Id);
   if (user.length > 0) {
-    console.log("The user with id: ", Id, "will be deleted");
     database.shift(user);
     res.status(201).json({
       status: 201,
