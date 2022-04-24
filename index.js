@@ -55,7 +55,7 @@ app.get("/api/movie/:movieId", (req, res, next) => {
 });
 
 app.get("/api/users", (req, res, next) => {
-  res.status(200)({
+  res.status(200).json({
     status: 200,
     result: database,
   });
