@@ -67,7 +67,7 @@ app.put("/api/user/:Id", (req, res, next) => {
     database.push(info);
     res.status(200).json({
       status: 200,
-      result: user,
+      result: info,
     });
   } else {
     res.status(401).json({
