@@ -1,35 +1,13 @@
 const express = require("express");
-const app = express();
-const port = process.env.PORT || 3000;
-const router = require("./src/routes/user.route");
-const bodyParser = require("body-parser");
-app.use(bodyParser.json());
+const router = express.Router();
+const userController = require("../contollers/user.controller");
 
 let database = [];
 let id = 0;
 
-app.all("*", (req, res, next) => {
-  const method = req.method;
-  console.log(`Method ${method} is aangeroepen`);
-  next();
-});
+router.post("/api/user", userController.addUser);
 
-app.post("/api/user", (req, res) => {
-  let user = req.body;
-  id++;
-  user = {
-    id,
-    ...user,
-  };
-  console.log(user);
-  database.push(user);
-  res.status(201).json({
-    status: 201,
-    result: database,
-  });
-});
-
-app.get("/api/user/:Id", (req, res, next) => {
+router.get("/api/user/:Id", (req, res, next) => {
   const Id = req.params.Id;
   console.log(`User met ID ${Id} gezocht`);
   let user = database.filter((item) => item.id == Id);
@@ -47,14 +25,9 @@ app.get("/api/user/:Id", (req, res, next) => {
   }
 });
 
-app.get("/api/user", (req, res, next) => {
-  res.status(200).json({
-    status: 200,
-    result: database,
-  });
-});
+router.get("/api/user", userController.getAllUsers);
 
-app.put("/api/user/:Id", (req, res, next) => {
+router.put("/api/user/:Id", (req, res, next) => {
   const Id = req.params.Id;
   let user = database.filter((item) => item.id == Id);
   let info = req.body;
@@ -77,7 +50,7 @@ app.put("/api/user/:Id", (req, res, next) => {
   }
 });
 
-app.delete("/api/user/:Id", (req, res, next) => {
+router.delete("/api/user/:Id", (req, res, next) => {
   const Id = req.params.Id;
   let user = database.filter((item) => item.id == Id);
   if (user.length > 0) {
@@ -94,13 +67,4 @@ app.delete("/api/user/:Id", (req, res, next) => {
   }
 });
 
-app.all("*", (req, res) => {
-  res.status(401).json({
-    status: 401,
-    result: "End-point not found",
-  });
-});
-
-app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`);
-});
+module.exports = router;
