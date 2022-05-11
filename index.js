@@ -1,12 +1,11 @@
 const express = require("express");
 const app = express();
 const port = process.env.PORT || 3000;
-const router = require("./src/routes/user.route");
+const userRouter = require("./src/routes/user.route");
 const bodyParser = require("body-parser");
-app.use(bodyParser.json());
+const { route } = require("./src/routes/user.route");
 
-let database = [];
-let id = 0;
+app.use(bodyParser.json());
 
 app.all("*", (req, res, next) => {
   const method = req.method;
@@ -14,85 +13,7 @@ app.all("*", (req, res, next) => {
   next();
 });
 
-app.post("/api/user", (req, res) => {
-  let user = req.body;
-  id++;
-  user = {
-    id,
-    ...user,
-  };
-  console.log(user);
-  database.push(user);
-  res.status(201).json({
-    status: 201,
-    result: database,
-  });
-});
-
-app.get("/api/user/:Id", (req, res, next) => {
-  const Id = req.params.Id;
-  console.log(`User met ID ${Id} gezocht`);
-  let user = database.filter((item) => item.id == Id);
-  if (user.length > 0) {
-    console.log(user);
-    res.status(200).json({
-      status: 200,
-      result: user,
-    });
-  } else {
-    res.status(401).json({
-      status: 401,
-      result: `User with ID ${Id} not found`,
-    });
-  }
-});
-
-app.get("/api/user", (req, res, next) => {
-  res.status(200).json({
-    status: 200,
-    result: database,
-  });
-});
-
-app.put("/api/user/:Id", (req, res, next) => {
-  const Id = req.params.Id;
-  let user = database.filter((item) => item.id == Id);
-  let info = req.body;
-  info = {
-    Id,
-    ...info,
-  };
-  if (user.length > 0) {
-    database.shift(user);
-    database.push(info);
-    res.status(200).json({
-      status: 200,
-      result: info,
-    });
-  } else {
-    res.status(401).json({
-      status: 401,
-      result: "User not found",
-    });
-  }
-});
-
-app.delete("/api/user/:Id", (req, res, next) => {
-  const Id = req.params.Id;
-  let user = database.filter((item) => item.id == Id);
-  if (user.length > 0) {
-    database.shift(user);
-    res.status(201).json({
-      status: 201,
-      result: database,
-    });
-  } else {
-    res.status(401).json({
-      status: 401,
-      result: "user with id " + Id + " not found",
-    });
-  }
-});
+app.use(userRouter);
 
 app.all("*", (req, res) => {
   res.status(401).json({
