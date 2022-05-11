@@ -15,7 +15,7 @@ describe("Manage users", () => {
     it("Verplicht veld ontbreekt, een gepaste error word terug gestuurd", (done) => {
       chai
         .request(server)
-        .post("/api/movie")
+        .post("/api/user")
         .send({
           firstName: "Mark",
           lastName: "Doe",
