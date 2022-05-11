@@ -7,7 +7,22 @@ let controller = {
   validateUser: (req, res, next) => {
     let user = req.body;
     let { firstName, lastName, street, city, password, emailAdress } = user;
-    next();
+
+    try {
+      assert(typeof firstName === "string", "Firstname must be a string");
+      assert(typeof lastName === "string", "Lastname must be a string");
+      assert(typeof street === "string", "Street must be a string");
+      assert(typeof city === "string", "City must be a string");
+      assert(typeof password === "string", "Password must be a string");
+      assert(typeof emailAdress === "string", "Emailadress must be a string");
+      next();
+    } catch (err) {
+      console.log(err);
+      res.status(400).json({
+        status: 400,
+        result: err.toString(),
+      });
+    }
   },
   addUser: (req, res) => {
     let user = req.body;
@@ -29,7 +44,7 @@ let controller = {
       result: database,
     });
   },
-  getUser: (req, res, next) => {
+  getUser: (req, res) => {
     const Id = req.params.Id;
     console.log(`User met ID ${Id} gezocht`);
     let user = database.filter((item) => item.id == Id);
@@ -46,7 +61,7 @@ let controller = {
       });
     }
   },
-  putUser: (req, res, next) => {
+  putUser: (req, res) => {
     const Id = req.params.Id;
     let user = database.filter((item) => item.id == Id);
     let info = req.body;
@@ -68,7 +83,7 @@ let controller = {
       });
     }
   },
-  deleteUser: (req, res, next) => {
+  deleteUser: (req, res) => {
     const Id = req.params.Id;
     let user = database.filter((item) => item.id == Id);
     if (user.length > 0) {
