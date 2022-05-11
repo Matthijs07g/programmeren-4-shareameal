@@ -17,11 +17,11 @@ let controller = {
       assert(typeof emailAdress === "string", "Emailadress must be a string");
       next();
     } catch (err) {
-      console.log(err);
-      res.status(400).json({
+      const error = {
         status: 400,
-        result: err.toString(),
-      });
+        result: err.message,
+      };
+      next(error);
     }
   },
   addUser: (req, res) => {
@@ -44,7 +44,7 @@ let controller = {
       result: database,
     });
   },
-  getUser: (req, res) => {
+  getUser: (req, res, next) => {
     const Id = req.params.Id;
     console.log(`User met ID ${Id} gezocht`);
     let user = database.filter((item) => item.id == Id);
@@ -55,13 +55,14 @@ let controller = {
         result: user,
       });
     } else {
-      res.status(401).json({
+      const error = {
         status: 401,
         result: `User with ID ${Id} not found`,
-      });
+      };
+      next(error);
     }
   },
-  putUser: (req, res) => {
+  putUser: (req, res, next) => {
     const Id = req.params.Id;
     let user = database.filter((item) => item.id == Id);
     let info = req.body;
@@ -77,13 +78,14 @@ let controller = {
         result: info,
       });
     } else {
-      res.status(401).json({
+      const error = {
         status: 401,
-        result: "User not found",
-      });
+        result: `User with ID ${Id} not found`,
+      };
+      next(error);
     }
   },
-  deleteUser: (req, res) => {
+  deleteUser: (req, res, next) => {
     const Id = req.params.Id;
     let user = database.filter((item) => item.id == Id);
     if (user.length > 0) {
@@ -93,10 +95,11 @@ let controller = {
         result: database,
       });
     } else {
-      res.status(401).json({
+      const error = {
         status: 401,
-        result: "user with id " + Id + " not found",
-      });
+        result: `User with ID ${Id} not found`,
+      };
+      next(error);
     }
   },
 };
