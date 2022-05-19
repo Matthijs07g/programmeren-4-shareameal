@@ -44,7 +44,7 @@ let controller = {
       if (err) throw err; // not connected!
 
       // Use the connection
-      connection.query("SELECT * FROM meal", function (error, results, fields) {
+      connection.query("SELECT * FROM user", function (error, results, fields) {
         // When done with the connection, release it.
         connection.release();
 

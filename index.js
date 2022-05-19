@@ -4,7 +4,9 @@ require("dotenv").config();
 const port = process.env.PORT;
 const userRouter = require("./src/routes/user.route");
 const bodyParser = require("body-parser");
-const { route } = require("./src/routes/user.route");
+const { route } =
+  require("./src/routes/user.route") || require("./src/routes/meal.route");
+const mealRouter = require("./src/routes/meal.route");
 
 app.use(bodyParser.json());
 
@@ -15,6 +17,7 @@ app.all("*", (req, res, next) => {
 });
 
 app.use(userRouter);
+app.use(mealRouter);
 
 app.all("*", (req, res) => {
   res.status(401).json({
