@@ -44,7 +44,7 @@ describe("Manage users", () => {
           street: "Lovensdijkstraat 61",
           city: "Breda",
           password: "secret",
-          emailAdress: "j.doe@server.com",
+          emailAdress: "m.doe@server.com",
         })
         .end((err, res) => {
           res.should.be.an("object");

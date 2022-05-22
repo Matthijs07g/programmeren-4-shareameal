@@ -106,29 +106,6 @@ let controller = {
       next(error);
     }
   },
-  putMeal: (req, res, next) => {
-    const Id = req.params.Id;
-    let meal = database.filter((item) => item.id == Id);
-    let info = req.body;
-    info = {
-      Id,
-      ...info,
-    };
-    if (meal.length > 0) {
-      database.shift(meal);
-      database.push(info);
-      res.status(200).json({
-        status: 200,
-        result: info,
-      });
-    } else {
-      const error = {
-        status: 401,
-        result: `Meal with ID ${Id} not found`,
-      };
-      next(error);
-    }
-  },
   deleteMeal: (req, res, next) => {
     const Id = req.params.Id;
     let meal = database.filter((item) => item.id == Id);

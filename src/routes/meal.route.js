@@ -8,8 +8,6 @@ router.get("/api/meal/:Id", mealController.getMeal);
 
 router.get("/api/meal", mealController.getAllMeals);
 
-router.put("/api/meal/:Id", mealController.putMeal);
-
 router.delete("/api/meal/:Id", mealController.deleteMeal);
 
 module.exports = router;

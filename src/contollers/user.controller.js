@@ -2,7 +2,6 @@ const dbconnection = require("../../database/dbconnection");
 const assert = require("assert");
 
 let id = 0;
-let database = [];
 
 let controller = {
   validateUser: (req, res, next) => {
@@ -32,11 +31,36 @@ let controller = {
       id,
       ...user,
     };
-    console.log(user);
-    database.push(user);
-    res.status(201).json({
-      status: 201,
-      result: database,
+
+    dbconnection.getConnection(function (err, connection) {
+      if (err) throw err; // not connected!
+
+      const firstName = user.firstName;
+      const lastName = user.lastName;
+      const street = user.street;
+      const city = user.city;
+      const password = user.password;
+      const emailAdress = user.emailAdress;
+
+      connection.query(
+        "INSERT INTO user (firstName, lastName, street, city, password, emailAdress) VALUES(?, ?, ?, ?, ?, ?); SELECT * FROM user WHERE emailAdress = ?",
+        [firstName, lastName, street, city, password, emailAdress, emailAdress],
+        function (error, results, fields) {
+          if (error) {
+            console.log(error);
+            res.status(409).json({
+              status: 409,
+              message: "User already exists",
+            });
+          } else {
+            console.log(results[1]);
+            res.status(201).json({
+              status: 201,
+              result: results[1],
+            });
+          }
+        }
+      );
     });
   },
   getAllUsers: (req, res) => {
@@ -68,60 +92,98 @@ let controller = {
   getUser: (req, res, next) => {
     const Id = req.params.Id;
     console.log(`User met ID ${Id} gezocht`);
-    let user = database.filter((item) => item.id == Id);
-    if (user.length > 0) {
-      console.log(user);
-      res.status(200).json({
-        status: 200,
-        result: user,
-      });
-    } else {
-      const error = {
-        status: 401,
-        result: `User with ID ${Id} not found`,
-      };
-      next(error);
-    }
+    dbconnection.getConnection(function (err, connection) {
+      if (err) throw err; // not connected!
+
+      // Use the connection
+      connection.query(
+        "SELECT * FROM user WHERE id = ?",
+        [Id],
+        function (error, results, fields) {
+          if (results.length > 0) {
+            res.status(200).json({
+              status: 200,
+              message: results[0],
+            });
+          } else {
+            res.status(404).json({
+              status: 404,
+              message: "user not found",
+            });
+          }
+        }
+      );
+    });
   },
   putUser: (req, res, next) => {
     const Id = req.params.Id;
-    let user = database.filter((item) => item.id == Id);
-    let info = req.body;
-    info = {
-      Id,
-      ...info,
-    };
-    if (user.length > 0) {
-      database.shift(user);
-      database.push(info);
-      res.status(200).json({
-        status: 200,
-        result: info,
-      });
-    } else {
-      const error = {
-        status: 401,
-        result: `User with ID ${Id} not found`,
-      };
-      next(error);
-    }
+    dbconnection.getConnection(function (err, connection) {
+      if (err) throw err; // not connected!
+
+      const firstName = user.firstName;
+      const lastName = user.lastName;
+      const street = user.street;
+      const city = user.city;
+      const password = user.password;
+      const emailAdress = user.emailAdress;
+
+      connection.query(
+        "UPDATE user SET firstName=?, lastName=?, street=?, city=?, password=?, emailAdress=? WHERE id = ?;",
+        [firstName, lastName, street, city, password, emailAdress, Id],
+        function (error, results, fields) {
+          if (error) {
+            console.log(error);
+            res.status(409).json({
+              status: 409,
+              message: "User already exists",
+            });
+          } else if (results.affectedRows < 1) {
+            res.status(400).json({
+              status: 400,
+              message: "User not found",
+            });
+          } else {
+            console.log(results[1]);
+            res.status(201).json({
+              status: 201,
+              result: results[1],
+            });
+          }
+        }
+      );
+    });
   },
   deleteUser: (req, res, next) => {
     const Id = req.params.Id;
-    let user = database.filter((item) => item.id == Id);
-    if (user.length > 0) {
-      database.shift(user);
-      res.status(201).json({
-        status: 201,
-        result: database,
-      });
-    } else {
-      const error = {
-        status: 401,
-        result: `User with ID ${Id} not found`,
-      };
-      next(error);
-    }
+    dbconnection.getConnection(function (err, connection) {
+      if (err) throw err; // not connected!
+
+      // Use the connection
+      connection.query(
+        "DELETE FROM user WHERE id=?",
+        [Id],
+        function (error, results, fields) {
+          // When done with the connection, release it.
+          connection.release();
+
+          // Handle error after the release.
+          if (error) throw error;
+
+          // Don't use the connection here, it has been returned to the pool.
+          if (results.affectedRows > 0) {
+            res.status(200).json({
+              status: 200,
+              message: "User has been deleted",
+            });
+          } else {
+            res.status(400).json({
+              status: 400,
+              message: "User not found",
+            });
+          }
+        }
+      );
+    });
   },
 };
 module.exports = controller;
