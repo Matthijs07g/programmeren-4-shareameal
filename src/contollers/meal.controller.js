@@ -2,7 +2,6 @@ const dbconnection = require("../../database/dbconnection");
 const assert = require("assert");
 
 let id = 0;
-let database = [];
 
 let controller = {
   validateMeal: (req, res, next) => {
@@ -55,11 +54,51 @@ let controller = {
       id,
       ...meal,
     };
-    console.log(meal);
-    database.push(meal);
-    res.status(201).json({
-      status: 201,
-      result: database,
+
+    dbconnection.getConnection(function (err, connection) {
+      if (err) throw err; // not connected!
+
+      const cook = req.userID;
+      const name = meal.name;
+      const description = meal.description;
+      const isActive = meal.isActive;
+      const isVega = meal.isVega;
+      const isVegan = meal.isVegan;
+      const isToTakeHome = meal.isToTakeHome;
+      const dateTime = meal.dateTime;
+      const imageUrl = meal.imageUrl;
+      const allergenes = meal.allergenes;
+      const maxAmountOfParticipants = meal.maxAmountOfParticipants;
+      const price = meal.price;
+
+      connection.query(
+        "INSERT INTO meal (cook, name, description, isActive, isVega, isVegan, isToTakeHome, dateTime, imageUrl, allergenes, maxAmountOfParticipants, price) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+        [
+          cook,
+          name,
+          description,
+          isActive,
+          isVega,
+          isVegan,
+          isToTakeHome,
+          dateTime,
+          imageUrl,
+          allergenes,
+          maxAmountOfParticipants,
+          price,
+        ],
+        function (error, results, fields) {
+          if (error) {
+            console.log(error);
+          } else {
+            console.log(results[1]);
+            res.status(201).json({
+              status: 201,
+              result: results[1],
+            });
+          }
+        }
+      );
     });
   },
   getAllMeals: (req, res) => {
@@ -90,38 +129,61 @@ let controller = {
   },
   getMeal: (req, res, next) => {
     const Id = req.params.Id;
-    console.log(`Meal met ID ${Id} gezocht`);
-    let meal = database.filter((item) => item.id == Id);
-    if (meal.length > 0) {
-      console.log(meal);
-      res.status(200).json({
-        status: 200,
-        result: meal,
-      });
-    } else {
-      const error = {
-        status: 401,
-        result: `Meal with ID ${Id} not found`,
-      };
-      next(error);
-    }
+    console.log(`meal met ID ${Id} gezocht`);
+    dbconnection.getConnection(function (err, connection) {
+      if (err) throw err; // not connected!
+
+      // Use the connection
+      connection.query(
+        "SELECT * FROM meal WHERE id = ?",
+        [Id],
+        function (error, results, fields) {
+          if (results.length > 0) {
+            res.status(200).json({
+              status: 200,
+              message: results[0],
+            });
+          } else {
+            res.status(404).json({
+              status: 404,
+              message: "Meal not found",
+            });
+          }
+        }
+      );
+    });
   },
   deleteMeal: (req, res, next) => {
     const Id = req.params.Id;
-    let meal = database.filter((item) => item.id == Id);
-    if (meal.length > 0) {
-      database.shift(meal);
-      res.status(201).json({
-        status: 201,
-        result: database,
-      });
-    } else {
-      const error = {
-        status: 401,
-        result: `User with ID ${Id} not found`,
-      };
-      next(error);
-    }
+    dbconnection.getConnection(function (err, connection) {
+      if (err) throw err; // not connected!
+
+      // Use the connection
+      connection.query(
+        "DELETE FROM meal WHERE id=?",
+        [Id],
+        function (error, results, fields) {
+          // When done with the connection, release it.
+          connection.release();
+
+          // Handle error after the release.
+          if (error) throw error;
+
+          // Don't use the connection here, it has been returned to the pool.
+          if (results.affectedRows > 0) {
+            res.status(200).json({
+              status: 200,
+              message: "Meal has been deleted",
+            });
+          } else {
+            res.status(400).json({
+              status: 400,
+              message: "Meal not found",
+            });
+          }
+        }
+      );
+    });
   },
 };
 module.exports = controller;
