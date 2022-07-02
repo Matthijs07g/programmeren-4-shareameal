@@ -42,10 +42,11 @@ let controller = {
       const city = user.city;
       const password = user.password;
       const emailAdress = user.emailAdress;
+      const phoneNumber = user.phoneNumber;
 
       connection.query(
-        "INSERT INTO user (firstName, lastName, street, city, password, emailAdress) VALUES(?, ?, ?, ?, ?, ?); SELECT * FROM user WHERE emailAdress = ?",
-        [firstName, lastName, street, city, password, emailAdress, emailAdress],
+        "INSERT INTO user (firstName, lastName, street, city, password, emailAdress) VALUES(?, ?, ?, ?, ?, ?, ?); SELECT * FROM user WHERE emailAdress = ?",
+        [firstName, lastName, street, city, password, emailAdress, phoneNumber, emailAdress],
         function (error, results, fields) {
           if (error) {
             console.log(error);
