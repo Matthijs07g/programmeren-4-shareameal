@@ -136,6 +136,7 @@ describe("Manage users", () => {
           city: "Breda",
           password: "secret",
           emailAdress: "name@server.nl",
+          phoneNumber: "",
         })
         .end((err, res) => {
           res.should.be.an("object");
@@ -156,6 +157,7 @@ describe("Manage users", () => {
           city: "Breda",
           password: "secret",
           emailAdress: "p.janssen@server.com",
+          phoneNumber: "",
         })
         .end((err, res) => {
           res.should.be.an("object");
@@ -422,7 +424,7 @@ describe("Manage users", () => {
           id: 1,
           firstName: "first",
           lastName: "last",
-          isActive: true,
+          isActive: 1,
           emailAdress: "name@server.nl",
           password: "secret",
           phoneNumber: "",
@@ -471,9 +473,7 @@ describe("Manage users", () => {
           res.should.be.an("object");
           let { status, message } = res.body;
           status.should.equals(400);
-          message.should.be
-            .a("string")
-            .that.equals("emailaddress must be of type string");
+          message.should.be.a("string").that.equals("emailaddress must be of type string");
           done();
         });
     });
@@ -481,7 +481,7 @@ describe("Manage users", () => {
     it("TC-205-3 niet-valide telefoonnummer.", (done) => {
       chai
         .request(server)
-        .put(`/api/user/2`)
+        .put(`/api/user/1`)
         // .set("authorization", "Bearer " + jwt.sign({ userId: 2 }, jwtSecretKey))
         .send({
           firstName: "Matthijs",
@@ -491,7 +491,7 @@ describe("Manage users", () => {
           isActive: true,
           password: "secret1",
           emailAdress: "test@server.nl",
-          phoneNumber: "test",
+          phoneNumber: 1,
         })
         .end((err, res) => {
           res.should.be.an("object");
@@ -503,10 +503,9 @@ describe("Manage users", () => {
     });
 
     it("TC-205-4 gebruiker bestaat niet.", (done) => {
-      let id = 0;
       chai
         .request(server)
-        .put(`/api/user/${id}`)
+        .put(`/api/user/99999999999`)
         // .set("authorization", "Bearer " + jwt.sign({ userId: 2 }, jwtSecretKey))
         .send({
           firstName: "Matthijs",
@@ -515,6 +514,7 @@ describe("Manage users", () => {
           city: "Breda",
           password: "secret1",
           emailAdress: "test@server.nl",
+          phoneNumber: "0612345678",
         })
         .end((err, res) => {
           res.should.be.an("object");
