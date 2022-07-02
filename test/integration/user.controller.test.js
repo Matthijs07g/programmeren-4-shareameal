@@ -166,6 +166,205 @@ describe("Manage users", () => {
         });
     });
   });
+  describe("UC-202 Overzicht van gebruikers", () => {
+    beforeEach((done) => {
+      logger.debug("userTests: beforeEach called.");
+      dbconnection.getConnection(function (err, connection) {
+        if (err) throw err; // not connected!
+        connection.query(
+          CLEAR_DB + INSERT_USER,
+          function (error, results, fields) {
+            // When done with the connection, release it.
+            connection.release();
+
+            // Handle error after the release.
+            if (error) throw error;
+            done();
+          }
+        );
+      });
+    });
+
+    it("TC-202-1 toon nul gebruikers", (done) => {
+      chai
+        .request(server)
+        .get("/api/user?length=0")
+        //.set("authorization", "Bearer " + jwt.sign({ userId: 1 }, jwtSecretKey))
+        .end((err, res) => {
+          res.should.be.an("object");
+          let { status, result } = res.body;
+          status.should.equals(200);
+          result.should.be.an("array").that.is.empty;
+          done();
+        });
+    });
+
+    it("TC-202-2 toon 2 gebruikers", (done) => {
+      chai
+        .request(server)
+        .get("/api/user?length=2")
+        // .set("authorization", "Bearer " + jwt.sign({ userId: 1 }, jwtSecretKey))
+        .end((err, res) => {
+          res.should.be.an("object");
+          let { status, result } = res.body;
+          status.should.equals(200);
+          result.should.be.an("array");
+          expect(result).to.have.lengthOf(2);
+          done();
+        });
+    });
+
+    it("TC-202-3 toon gebruikers met zoekterm op niet bestaande naam", (done) => {
+      chai
+        .request(server)
+        .get("/api/user?firstName=aaaaa")
+        // .set("authorization", "Bearer " + jwt.sign({ userId: 1 }, jwtSecretKey))
+        .end((err, res) => {
+          res.should.be.an("object");
+          let { status, result } = res.body;
+          status.should.equals(200);
+          result.should.be.an("array");
+          expect(result).to.have.lengthOf(0);
+          done();
+        });
+    });
+
+    it("TC-202-4 toon gebruikers met isActive = false.", (done) => {
+      chai
+        .request(server)
+        .get("/api/user?isActive=false")
+        // .set("authorization", "Bearer " + jwt.sign({ userId: 1 }, jwtSecretKey))
+        .end((err, res) => {
+          res.should.be.an("object");
+          let { status, result } = res.body;
+          status.should.equals(200);
+          result.should.be.an("array");
+          expect(result).to.have.lengthOf(1);
+          done();
+        });
+    });
+
+    it("TC-202-5 toon gebruikers met isActive = true.", (done) => {
+      chai
+        .request(server)
+        .get("/api/user?isActive=false")
+        // .set("authorization", "Bearer " + jwt.sign({ userId: 1 }, jwtSecretKey))
+        .end((err, res) => {
+          res.should.be.an("object");
+          let { status, result } = res.body;
+          status.should.equals(200);
+          result.should.be.an("array");
+          expect(result).to.have.lengthOf(1);
+          done();
+        });
+    });
+
+    it("TC-202-6 toon gebruiker met bestaande naam", (done) => {
+      chai
+        .request(server)
+        .get("/api/user?firstName=first")
+        // .set("authorization", "Bearer " + jwt.sign({ userId: 1 }, jwtSecretKey))
+        .end((err, res) => {
+          res.should.be.an("object");
+          let { status, result } = res.body;
+          status.should.equals(200);
+          result.should.be.an("array");
+          expect(result).to.have.lengthOf(1);
+          result[0].should.be.an("object").that.contains({
+            id: 1,
+            firstName: "first",
+            lastName: "last",
+            isActive: result[0].isActive,
+            emailAdress: "name@server.nl",
+            password: "secret",
+            phoneNumber: "",
+            street: "street",
+            city: "city",
+          });
+          done();
+        });
+    });
+  });
+
+  // describe("UC-203 get Profile", () => {
+  //   beforeEach((done) => {
+  //     logger.debug("userTests: beforeEach called.");
+  //     dbconnection.getConnection(function (err, connection) {
+  //       if (err) throw err; // not connected!
+  //       connection.query(
+  //         CLEAR_DB + INSERT_USER,
+  //         function (error, results, fields) {
+  //           // When done with the connection, release it.
+  //           connection.release();
+
+  //           // Handle error after the release.
+  //           if (error) throw error;
+  //           done();
+  //         }
+  //       );
+  //     });
+  //   });
+
+  //   it("TC-203-1 unvalid token", (done) => {
+  //     chai
+  //       .request(server)
+  //       .get(`/api/user/profile`)
+  //       .set(
+  //         "authorization",
+  //         "Bearer " + jwt.sign({ userId: 2 }, jwtSecretKey) + "AN_UNVALID_PART"
+  //       )
+  //       .end((err, res) => {
+  //         res.should.be.an("object");
+  //         let { status, message } = res.body;
+  //         status.should.equals(401);
+  //         message.should.be.a("string").that.equals(`Not authorized`);
+  //         done();
+  //       });
+  //   });
+
+  //   it("TC-203-2 valid token", (done) => {
+  //     chai
+  //       .request(server)
+  //       .get(`/api/user/profile`)
+  //       .set("authorization", "Bearer " + jwt.sign({ userId: 1 }, jwtSecretKey))
+  //       .end((err, res) => {
+  //         res.should.be.an("object");
+  //         let { status, result } = res.body;
+  //         status.should.equals(200);
+  //         result.should.be.a("object").that.contains({
+  //           id: result.id,
+  //           firstName: "Quincy",
+  //           lastName: "van Deursen",
+  //           street: "Lisdodde",
+  //           city: "Breda",
+  //           isActive: result.isActive,
+  //           password: "Secret1!",
+  //           emailAdress: "Quincyvandeursen@gmail.com",
+  //           phoneNumber: "0612345678",
+  //         });
+  //         done();
+  //       });
+  //   });
+  // });
+
+  // describe("UC-204 Details van gebruiker", () => {
+  //   beforeEach((done) => {
+  //     logger.debug("userTests: beforeEach called.");
+  //     dbconnection.getConnection(function (err, connection) {
+  //       if (err) throw err; // not connected!
+  //       connection.query(
+  //         CLEAR_DB + INSERT_USER,
+  //         function (error, results, fields) {
+  //           // When done with the connection, release it.
+  //           connection.release();
+
+  //           // Handle error after the release.
+  //           if (error) throw error;
+  //           done();
+  //         }
+  //       );
+  //     });
+  //   });
   describe("UC-204 Details van gebruiker /api/user/:Id", () => {
     beforeEach((done) => {
       dbconnection.getConnection(function (err, connection) {
@@ -187,18 +386,18 @@ describe("Manage users", () => {
         );
       });
     });
-    // it("TC-204-1 Ongeldig token", (done) => {
-    //   chai
-    //     .request(server)
-    //     .get("/api/user/hallo")
-    //     .end((err, res) => {
-    //       res.should.be.an("object");
-    //       let { status, message } = res.body;
-    //       status.should.equals(401);
-    //       message.should.be.a("string").that.equals("Token is invalid");
-    //       done();
-    //     });
-    // });
+    it("TC-204-1 Ongeldig token", (done) => {
+      chai
+        .request(server)
+        .get("/api/user/hallo")
+        .end((err, res) => {
+          res.should.be.an("object");
+          let { status, message } = res.body;
+          status.should.equals(401);
+          message.should.be.a("string").that.equals("Token is invalid");
+          done();
+        });
+    });
     it("TC-204-2 Gebruiker-ID bestaat niet", (done) => {
       chai
         .request(server)
@@ -211,17 +410,256 @@ describe("Manage users", () => {
           done();
         });
     });
-    // it("TC-204-3 Gebruiker-ID bestaat", (done) => {
-    //   chai
-    //     .request(server)
-    //     .get("/api/user/1")
-    //     .end((err, res) => {
-    //       res.should.be.an("object");
-    //       let { status, message } = res.body;
-    //       status.should.equals(200);
-    //       message.should.be.an("array");
-    //       done();
-    //     });
-    // });
+    it("TC-204-3 Gebruiker-ID bestaat", (done) => {
+      chai
+        .request(server)
+        .get("/api/user/1")
+        .end((err, res) => {
+          res.should.be.an("object");
+          let { status, message } = res.body;
+          status.should.equals(200);
+          message.should.be.an("array");
+          done();
+        });
+    });
+  });
+  describe("UC-205 Gebruiker wijzigen", () => {
+    beforeEach((done) => {
+      logger.debug("userTests: beforeEach called.");
+      dbconnection.getConnection(function (err, connection) {
+        if (err) throw err; // not connected!
+        connection.query(
+          CLEAR_DB + INSERT_USER,
+          function (error, results, fields) {
+            // When done with the connection, release it.
+            connection.release();
+
+            // Handle error after the release.
+            if (error) throw error;
+            done();
+          }
+        );
+      });
+    });
+
+    it("TC-205-1 verplicht veld email ontbreekt.", (done) => {
+      chai
+        .request(server)
+        .put(`/api/user/1`)
+        // .set("authorization", "Bearer " + jwt.sign({ userId: 2 }, jwtSecretKey))
+        .send({
+          firstName: "Matthijs",
+          lastName: "van Gastel",
+          street: "lovendijk",
+          city: "Breda",
+          isActive: true,
+          password: "Secret1",
+          phoneNumber: "0612345678",
+        })
+        .end((err, res) => {
+          res.should.be.an("object");
+          let { status, message } = res.body;
+          status.should.equals(400);
+          message.should.be
+            .a("string")
+            .that.equals("emailaddress must be of type string");
+          done();
+        });
+    });
+
+    it("TC-205-3 niet-valide telefoonnummer.", (done) => {
+      chai
+        .request(server)
+        .put(`/api/user/2`)
+        // .set("authorization", "Bearer " + jwt.sign({ userId: 2 }, jwtSecretKey))
+        .send({
+          firstName: "Matthijs",
+          lastName: "van Gastel",
+          street: "lovendijk",
+          city: "Breda",
+          isActive: true,
+          password: "secret1",
+          emailAdress: "test@server.nl",
+          phoneNumber: "test",
+        })
+        .end((err, res) => {
+          res.should.be.an("object");
+          let { status, message } = res.body;
+          status.should.equals(400);
+          message.should.be.a("string").that.equals("Phonenumber isn't valid.");
+          done();
+        });
+    });
+
+    it("TC-205-4 gebruiker bestaat niet.", (done) => {
+      let id = 0;
+      chai
+        .request(server)
+        .put(`/api/user/${id}`)
+        .set("authorization", "Bearer " + jwt.sign({ userId: 2 }, jwtSecretKey))
+        .send({
+          firstName: "Matthijs",
+          lastName: "van Gastel",
+          street: "lovendijk",
+          city: "Breda",
+          isActive: true,
+          password: "secret1",
+          emailAdress: "test@server.nl",
+          phoneNumber: "0612345678",
+        })
+        .end((err, res) => {
+          res.should.be.an("object");
+          let { status, message } = res.body;
+          status.should.equals(400);
+          message.should.be
+            .a("string")
+            .that.equals(
+              "User not found"
+            );
+          done();
+        });
+    });
+
+    it("TC-205-5 niet ingelogd", (done) => {
+      let id = 1;
+      chai
+        .request(server)
+        .put(`/api/user/${id}`)
+        .send({
+          firstName: "Matthijs",
+          lastName: "van Gastel",
+          street: "lovendijk",
+          city: "Breda",
+          isActive: true,
+          password: "secret1",
+          emailAdress: "test@server.nl",
+          phoneNumber: "0612345678",
+        })
+        .end((err, res) => {
+          res.should.be.an("object");
+          let { status, message } = res.body;
+          status.should.equals(401);
+          message.should.be
+            .a("string")
+            .that.equals("Authorization header missing!");
+          done();
+        });
+    });
+
+    it("TC-205-6 succesvol wijzigen", (done) => {
+      chai
+        .request(server)
+        .put(`/api/user/1`)
+        // .set("authorization", "Bearer " + jwt.sign({ userId: 2 }, jwtSecretKey))
+        .send({
+          firstName: "Matthijs",
+          lastName: "van Gastel",
+          street: "lovendijk",
+          city: "Breda",
+          isActive: true,
+          password: "secret1",
+          emailAdress: "test@server.nl",
+          phoneNumber: "0612345678",
+        })
+        .end((err, res) => {
+          res.should.be.an("object");
+          let { status, result } = res.body;
+          status.should.equals(200);
+          result.should.be.a("object").that.contains({
+            id: result.id,
+            firstName: "Matthijs",
+          lastName: "van Gastel",
+          street: "lovendijk",
+          city: "Breda",
+          isActive: true,
+          password: "secret1",
+          emailAdress: "test@server.nl",
+          phoneNumber: "0612345678",
+          });
+          done();
+        });
+    });
+  });
+
+  describe("UC-206 Gebruiker verwijderen", () => {
+    beforeEach((done) => {
+      logger.debug("userTests: beforeEach called.");
+      dbconnection.getConnection(function (err, connection) {
+        if (err) throw err; // not connected!
+        connection.query(
+          CLEAR_DB + INSERT_USER,
+          function (error, results, fields) {
+            // When done with the connection, release it.
+            connection.release();
+
+            // Handle error after the release.
+            if (error) throw error;
+            done();
+          }
+        );
+      });
+    });
+
+    it("TC-206-1 gebruiker bestaat niet", (done) => {
+      chai
+        .request(server)
+        .delete(`/api/user/99999999`)
+        // .set("authorization", "Bearer " + jwt.sign({ userId: 1 }, jwtSecretKey))
+        .end((err, res) => {
+          res.should.be.an("object");
+          let { status, message } = res.body;
+          status.should.equals(400);
+          message.should.be.a("string").that.equals(`User not found`);
+          done();
+        });
+    });
+
+    it("TC-206-2 not logged in.", (done) => {
+      chai
+        .request(server)
+        .delete(`/api/user/1`)
+        .end((err, res) => {
+          res.should.be.an("object");
+          let { status, message } = res.body;
+          status.should.equals(401);
+          message.should.be
+            .a("string")
+            .that.equals(`Authorization header missing!`);
+          done();
+        });
+    });
+
+    it("TC-206-3 user is niet de eigenaar", (done) => {
+      chai
+        .request(server)
+        .delete(`/api/user/2`)
+        // .set("authorization", "Bearer " + jwt.sign({ userId: 1 }, jwtSecretKey))
+        .end((err, res) => {
+          res.should.be.an("object");
+          let { status, message } = res.body;
+          status.should.equals(403);
+          message.should.be
+            .a("string")
+            .that.equals(`Not authorized to delete the user.`);
+          done();
+        });
+    });
+
+    it("TC-206-4 deleting user succesfull", (done) => {
+      chai
+        .request(server)
+        .delete(`/api/user/1`)
+        .set("authorization", "Bearer " + jwt.sign({ userId: 1 }, jwtSecretKey))
+        .end((err, res) => {
+          res.should.be.an("object");
+          let { status, result } = res.body;
+          status.should.equals(200);
+          result.should.be
+            .a("string")
+            .that.equals(`User has been deleted`);
+          done();
+        });
+    });
   });
 });
+
