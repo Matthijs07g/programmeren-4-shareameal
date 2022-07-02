@@ -145,8 +145,8 @@ let controller = {
             });
           } else {
             console.log(results[1]);
-            res.status(201).json({
-              status: 201,
+            res.status(200).json({
+              status: 200,
               result: results[1],
             });
           }

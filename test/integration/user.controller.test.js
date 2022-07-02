@@ -424,7 +424,7 @@ describe("Manage users", () => {
           lastName: "last",
           isActive: true,
           emailAdress: "name@server.nl",
-          password: secret,
+          password: "secret",
           phoneNumber: "",
           roles: "",
           street: "street",
@@ -530,10 +530,9 @@ describe("Manage users", () => {
     });
 
     it("TC-205-5 niet ingelogd", (done) => {
-      let id = 1;
       chai
         .request(server)
-        .put(`/api/user/${id}`)
+        .put(`/api/user/1`)
         .send({
           firstName: "Matthijs",
           lastName: "van Gastel",
@@ -554,7 +553,6 @@ describe("Manage users", () => {
           done();
         });
     });
-
     it("TC-205-6 succesvol wijzigen", (done) => {
       chai
         .request(server)
