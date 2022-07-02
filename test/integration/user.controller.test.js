@@ -419,7 +419,7 @@ describe("Manage users", () => {
           let { status, message } = res.body;
           status.should.equals(200);
           message.should.be.an("object").that.contains({  
-          id: "1",
+          id: 1,
           firstName: "first",
           lastName: "last",
           isActive: true,
@@ -573,8 +573,8 @@ describe("Manage users", () => {
           let { status, result } = res.body;
           status.should.equals(200);
           result.should.be.a("object").that.contains({
-            id: result.id,
-            firstName: "Matthijs",
+          id: 1,
+          firstName: "Matthijs",
           lastName: "van Gastel",
           street: "lovendijk",
           city: "Breda",
