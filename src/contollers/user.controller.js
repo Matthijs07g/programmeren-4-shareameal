@@ -6,7 +6,7 @@ let id = 0;
 let controller = {
   validateUser: (req, res, next) => {
     let user = req.body;
-    let { firstName, lastName, street, city, password, emailAdress } = user;
+    let { firstName, lastName, street, city, password, emailAdress, phoneNumber } = user;
 
     try {
       assert(typeof firstName === "string", "Firstname must be a string");
@@ -15,6 +15,7 @@ let controller = {
       assert(typeof city === "string", "City must be a string");
       assert(typeof password === "string", "Password must be a string");
       assert(typeof emailAdress === "string", "Emailadress must be a string");
+      assert(typeof phoneNumber ==="string", "Phonemumber isn't valid")
       next();
     } catch (err) {
       const error = {

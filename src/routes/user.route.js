@@ -9,7 +9,7 @@ router.get("/api/user/:Id", userController.getUser);
 
 router.get("/api/user", userController.getAllUsers);
 
-router.put("/api/user/:Id", userController.putUser);
+router.put("/api/user/:Id", userController.validateUser, userController.putUser);
 
 router.delete("/api/user/:Id", userController.deleteUser);
 
