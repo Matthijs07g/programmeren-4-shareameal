@@ -418,7 +418,18 @@ describe("Manage users", () => {
           res.should.be.an("object");
           let { status, message } = res.body;
           status.should.equals(200);
-          message.should.be.an("array");
+          message.should.be.an("object").that.contains({  
+          id: "1",
+          firstName: "first",
+          lastName: "last",
+          isActive: true,
+          emailAdress: "name@server.nl",
+          password: secret,
+          phoneNumber: "",
+          roles: "",
+          street: "street",
+          city: "city",
+        })
           done();
         });
     });
@@ -496,16 +507,14 @@ describe("Manage users", () => {
       chai
         .request(server)
         .put(`/api/user/${id}`)
-        .set("authorization", "Bearer " + jwt.sign({ userId: 2 }, jwtSecretKey))
+        // .set("authorization", "Bearer " + jwt.sign({ userId: 2 }, jwtSecretKey))
         .send({
           firstName: "Matthijs",
           lastName: "van Gastel",
           street: "lovendijk",
           city: "Breda",
-          isActive: true,
           password: "secret1",
           emailAdress: "test@server.nl",
-          phoneNumber: "0612345678",
         })
         .end((err, res) => {
           res.should.be.an("object");
