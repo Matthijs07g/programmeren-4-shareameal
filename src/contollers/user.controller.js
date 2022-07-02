@@ -121,7 +121,7 @@ let controller = {
     const Id = req.params.Id;
     dbconnection.getConnection(function (err, connection) {
       if (err) throw err; // not connected!
-
+      let user = req.body;
       const firstName = user.firstName;
       const lastName = user.lastName;
       const street = user.street;

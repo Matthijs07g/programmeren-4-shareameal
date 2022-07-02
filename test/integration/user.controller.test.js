@@ -427,7 +427,7 @@ describe("Manage users", () => {
           isActive: 1,
           emailAdress: "name@server.nl",
           password: "secret",
-          phoneNumber: "",
+          phoneNumber: "-",
           roles: "",
           street: "street",
           city: "city",
