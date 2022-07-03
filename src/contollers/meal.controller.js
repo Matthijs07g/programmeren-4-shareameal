@@ -72,7 +72,7 @@ let controller = {
       const price = meal.price;
 
       connection.query(
-        "INSERT INTO meal (cook, name, description, isActive, isVega, isVegan, isToTakeHome, dateTime, imageUrl, allergenes, maxAmountOfParticipants, price) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+        "INSERT INTO meal (cookId, name, description, isActive, isVega, isVegan, isToTakeHome, dateTime, imageUrl, allergenes, maxAmountOfParticipants, price) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
         [
           cook,
           name,
