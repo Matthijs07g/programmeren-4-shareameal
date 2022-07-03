@@ -86,9 +86,9 @@ describe("Manage meals", () => {
           })
           .end((err, res) => {
             res.should.be.an("object");
-            let { status, message } = res.body;
+            let { status, result } = res.body;
             status.should.equals(400);
-            message.should.be
+            result.should.be
               .a("string")
               .that.equals("name must be of type string");
             done();
@@ -194,7 +194,6 @@ describe("Manage meals", () => {
             res.should.be.an("object");
             let { status, result } = res.body;
             status.should.equals(200);
-            status.should.equals(200);
             result.should.be.an("array");
             done();
           });
@@ -242,9 +241,9 @@ describe("Manage meals", () => {
           .get(`/api/meal/${id}`)
           .end((err, res) => {
             res.should.be.an("object");
-            let { status, result } = res.body;
+            let { status, message } = res.body;
             status.should.equals(200);
-            result.should.be.a("object").that.contains({
+            message.should.be.a("object").that.contains({
               id: 1,
               name: "meal1",
               description: "meal1 description",
@@ -335,11 +334,11 @@ describe("Manage meals", () => {
           .set("authorization", "Bearer " + jwt.sign({ userId: 2 }, jwtSecretKey))
           .end((err, res) => {
             res.should.be.an("object");
-            let { status, result } = res.body;
+            let { status, message } = res.body;
             status.should.equals(200);
-            result.should.be
+            message.should.be
               .a("string")
-              .that.equals("Meal with id 2 succesfully deleted.");
+              .that.equals("Meal has been deleted");
             done();
           });
       });
