@@ -90,11 +90,14 @@ let controller = {
         function (error, results, fields) {
           connection.release();
           if (error)  throw error
-            console.log(results[1]);
+          if(results.affectedRows>0){
+            let addedMeal = {id: results.insertId, ...req.body}
+            console.log(addedMeal);
             res.status(201).json({
               status: 201,
-              result: results[1],
+              result: addedMeal,
             });
+          }  
         }
       );
     });
