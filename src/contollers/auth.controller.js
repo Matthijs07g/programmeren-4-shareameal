@@ -20,12 +20,12 @@ module.exports = {
                 message: "user not found",
               });
             }
-            if(rows.length=0){
+            if(rows.length<1){
               res.status(404).json({
                 status: 404,
                 message: "user not found",
               });
-            }
+            }else{
             if (rows) {
               if (
                 rows &&
@@ -60,6 +60,7 @@ module.exports = {
                   message: "password invalid",
                 });
               }
+            }
             }
           }
         );
