@@ -76,7 +76,7 @@ const INSERT_MEALS =
             status.should.equals(400);
             result.should.be
               .a("string")
-              .that.equals("password must be a string.");
+              .that.equals("password must be a string");
             done();
           });
       });
