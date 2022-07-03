@@ -229,7 +229,6 @@ let controller = {
           connection.release();
           // Handle error after the release.
           if (error) throw error;
-///
           // Don't use the connection here, it has been returned to the pool.
           if (results.affectedRows > 0) {
             res.status(200).json({
