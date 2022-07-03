@@ -252,7 +252,7 @@ describe("Manage meals", () => {
               isActive: 0,
               isVega: 0,
               isVegan: 0,
-              isToTakeHome: 0,
+              isToTakeHome: 1,
               dateTime: message.dateTime,
               imageUrl: "image url",
               allergenes: message.allergenes,

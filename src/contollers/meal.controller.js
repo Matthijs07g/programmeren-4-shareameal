@@ -194,8 +194,8 @@ let controller = {
               message: "Meal has been deleted",
             });
           } else {
-            res.status(400).json({
-              status: 400,
+            res.status(404).json({
+              status: 404,
               message: "Meal not found",
             });
           }
