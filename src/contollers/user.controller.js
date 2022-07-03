@@ -66,11 +66,19 @@ let controller = {
     });
   },
   getAllUsers: (req, res) => {
+    let query = "SELECT * FROM user";
+    let {count, isActive, firstName} = req.query;
+    if (isActive && firstName) {query += ` WHERE firstName = '${firstName}' AND isActive = ${isActive}`;
+    } else if (isActive) {query += ` WHERE isActive = ${isActive}`;
+    } else if (firstName) {query += ` WHERE firstName = '${firstName}'`;
+    } if (count) {query += ` LIMIT ${count}`;
+    }
+
     dbconnection.getConnection(function (err, connection) {
       if (err) throw err; // not connected!
 
       // Use the connection
-      connection.query("SELECT * FROM user", function (error, results, fields) {
+      connection.query(query, function (error, results, fields) {
         // When done with the connection, release it.
         connection.release();
 
@@ -117,6 +125,35 @@ let controller = {
       );
     });
   },
+  getUserProfile:(req, res, next) =>{
+    const Id = req.params.Id;
+    dbconnection.getConnection(function (err, connection) {
+      if (err) throw err; // not connected!
+      connection.query(
+        "SELECT * FROM user WHERE id = ?;",
+        [Id],
+        function (error, results, fields) {
+          if (error) {
+            console.log(error);
+            next(error)
+            } else if (results.affectedRows >= 1) {
+              console.log(results[1]);
+              res.status(200).json({
+                status: 200,
+                result: results[1],
+            });
+          } else {
+            res.status(401).json({
+              status: 401,
+              result: "unknown error",
+            });
+          }
+        }
+      );
+    });
+  },
+
+
   putUser: (req, res, next) => {
     const Id = req.params.Id;
     dbconnection.getConnection(function (err, connection) {

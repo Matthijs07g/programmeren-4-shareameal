@@ -190,7 +190,7 @@ describe("Manage users", () => {
     it("TC-202-1 toon nul gebruikers", (done) => {
       chai
         .request(server)
-        .get("/api/user?length=0")
+        .get("/api/user?count=0")
         //.set("authorization", "Bearer " + jwt.sign({ userId: 1 }, jwtSecretKey))
         .end((err, res) => {
           res.should.be.an("object");
@@ -204,7 +204,7 @@ describe("Manage users", () => {
     it("TC-202-2 toon 2 gebruikers", (done) => {
       chai
         .request(server)
-        .get("/api/user?length=2")
+        .get("/api/user?count=2")
         // .set("authorization", "Bearer " + jwt.sign({ userId: 1 }, jwtSecretKey))
         .end((err, res) => {
           res.should.be.an("object");
@@ -234,7 +234,7 @@ describe("Manage users", () => {
     it("TC-202-4 toon gebruikers met isActive = false.", (done) => {
       chai
         .request(server)
-        .get("/api/user?isActive=false")
+        .get("/api/user?isActive=0")
         // .set("authorization", "Bearer " + jwt.sign({ userId: 1 }, jwtSecretKey))
         .end((err, res) => {
           res.should.be.an("object");
@@ -249,7 +249,7 @@ describe("Manage users", () => {
     it("TC-202-5 toon gebruikers met isActive = true.", (done) => {
       chai
         .request(server)
-        .get("/api/user?isActive=false")
+        .get("/api/user?isActive=1")
         // .set("authorization", "Bearer " + jwt.sign({ userId: 1 }, jwtSecretKey))
         .end((err, res) => {
           res.should.be.an("object");
@@ -288,85 +288,82 @@ describe("Manage users", () => {
     });
   });
 
-  // describe("UC-203 get Profile", () => {
-  //   beforeEach((done) => {
-  //     logger.debug("userTests: beforeEach called.");
-  //     dbconnection.getConnection(function (err, connection) {
-  //       if (err) throw err; // not connected!
-  //       connection.query(
-  //         CLEAR_DB + INSERT_USER,
-  //         function (error, results, fields) {
-  //           // When done with the connection, release it.
-  //           connection.release();
+  describe("UC-203 get Profile", () => {
+    beforeEach((done) => {
+      logger.debug("userTests: beforeEach called.");
+      dbconnection.getConnection(function (err, connection) {
+        if (err) throw err; // not connected!
+        connection.query(
+          CLEAR_DB + INSERT_USER,
+          function (error, results, fields) {
+            // When done with the connection, release it.
+            connection.release();
 
-  //           // Handle error after the release.
-  //           if (error) throw error;
-  //           done();
-  //         }
-  //       );
-  //     });
-  //   });
+            // Handle error after the release.
+            if (error) throw error;
+            done();
+          }
+        );
+      });
+    });
 
-  //   it("TC-203-1 unvalid token", (done) => {
-  //     chai
-  //       .request(server)
-  //       .get(`/api/user/profile`)
-  //       .set(
-  //         "authorization",
-  //         "Bearer " + jwt.sign({ userId: 2 }, jwtSecretKey) + "AN_UNVALID_PART"
-  //       )
-  //       .end((err, res) => {
-  //         res.should.be.an("object");
-  //         let { status, message } = res.body;
-  //         status.should.equals(401);
-  //         message.should.be.a("string").that.equals(`Not authorized`);
-  //         done();
-  //       });
-  //   });
+    it("TC-203-1 unvalid token", (done) => {
+      chai
+        .request(server)
+        .get(`/api/user/profile`)
+        // .set("authorization", "Bearer " + jwt.sign({ userId: 2 }, jwtSecretKey) + "AN_UNVALID_PART")
+        .end((err, res) => {
+          res.should.be.an("object");
+          let { status, message } = res.body;
+          status.should.equals(401);
+          message.should.be.a("string").that.equals(`Not authorized`);
+          done();
+        });
+    });
 
-  //   it("TC-203-2 valid token", (done) => {
-  //     chai
-  //       .request(server)
-  //       .get(`/api/user/profile`)
-  //       .set("authorization", "Bearer " + jwt.sign({ userId: 1 }, jwtSecretKey))
-  //       .end((err, res) => {
-  //         res.should.be.an("object");
-  //         let { status, result } = res.body;
-  //         status.should.equals(200);
-  //         result.should.be.a("object").that.contains({
-  //           id: result.id,
-  //           firstName: "Quincy",
-  //           lastName: "van Deursen",
-  //           street: "Lisdodde",
-  //           city: "Breda",
-  //           isActive: result.isActive,
-  //           password: "Secret1!",
-  //           emailAdress: "Quincyvandeursen@gmail.com",
-  //           phoneNumber: "0612345678",
-  //         });
-  //         done();
-  //       });
-  //   });
-  // });
+    it("TC-203-2 valid token", (done) => {
+      chai
+        .request(server)
+        .get(`/api/user/profile`)
+        // .set("authorization", "Bearer " + jwt.sign({ userId: 1 }, jwtSecretKey))
+        .end((err, res) => {
+          res.should.be.an("object");
+          let { status, result } = res.body;
+          status.should.equals(200);
+          result.should.be.a("object").that.contains({
+            id: result.id,
+            firstName: "Quincy",
+            lastName: "van Deursen",
+            street: "Lisdodde",
+            city: "Breda",
+            isActive: result.isActive,
+            password: "Secret1!",
+            emailAdress: "Quincyvandeursen@gmail.com",
+            phoneNumber: "0612345678",
+          });
+          done();
+        });
+    });
+  });
 
-  // describe("UC-204 Details van gebruiker", () => {
-  //   beforeEach((done) => {
-  //     logger.debug("userTests: beforeEach called.");
-  //     dbconnection.getConnection(function (err, connection) {
-  //       if (err) throw err; // not connected!
-  //       connection.query(
-  //         CLEAR_DB + INSERT_USER,
-  //         function (error, results, fields) {
-  //           // When done with the connection, release it.
-  //           connection.release();
+  describe("UC-204 Details van gebruiker", () => {
+    beforeEach((done) => {
+      logger.debug("userTests: beforeEach called.");
+      dbconnection.getConnection(function (err, connection) {
+        if (err) throw err; // not connected!
+        connection.query(
+          CLEAR_DB + INSERT_USER,
+          function (error, results, fields) {
+            // When done with the connection, release it.
+            connection.release();
 
-  //           // Handle error after the release.
-  //           if (error) throw error;
-  //           done();
-  //         }
-  //       );
-  //     });
-  //   });
+            // Handle error after the release.
+            if (error) throw error;
+            done();
+          }
+        );
+      });
+    });
   describe("UC-204 Details van gebruiker /api/user/:Id", () => {
     beforeEach((done) => {
       dbconnection.getConnection(function (err, connection) {
@@ -668,4 +665,4 @@ describe("Manage users", () => {
     });
   });
 });
-
+});
