@@ -32,7 +32,7 @@ let controller = {
       );
       assert(typeof dateTime === "string", "dateTime must be a string");
       assert(typeof imageUrl === "string", "imageUrl must be a string");
-      assert(typeof allergenes === "string", "allergenes must be a string");
+      assert(typeof allergenes === "array", "allergenes must be a array");
       assert(
         typeof maxAmountOfParticipants === "number",
         "maxAmountOfParticipants must be a number"
@@ -156,8 +156,26 @@ let controller = {
   deleteMeal: (req, res, next) => {
     const Id = req.params.Id;
     dbconnection.getConnection(function (err, connection) {
-      if (err) throw err; // not connected!
-
+      //not connected
+      if (err) {
+        next(err);
+      }
+      connection.query(
+    "SELECT * FROM meal WHERE id = ?",
+    [Id],
+    function (error, results, fields) {
+      // When done with the connection, release it.
+      connection.release();
+      // Handle error after the release.
+      if (error) throw error;
+      // succesfull query handlers
+      if (results.length > 0 && results[0].cookId != req.userId) {
+        return res.status(403).json({
+          status: 403,
+          message: `Meal not found or not authirized`,
+        });
+      } else {
+    
       // Use the connection
       connection.query(
         "DELETE FROM meal WHERE id=?",
@@ -183,7 +201,12 @@ let controller = {
           }
         }
       );
-    });
-  },
-};
+    }
+  }
+  );
+  });
+}
+}
+
+  
 module.exports = controller;

@@ -190,6 +190,7 @@ describe("Manage meals", () => {
         chai
           .request(server)
           .get("/api/meal")
+          .set("authorization", "Bearer " + jwt.sign({ userId: 1 }, jwtSecretKey))
           .end((err, res) => {
             res.should.be.an("object");
             let { status, result } = res.body;
@@ -229,7 +230,7 @@ describe("Manage meals", () => {
             status.should.equals(404);
             message.should.be
               .a("string")
-              .that.equals(`Can not find meal with id ${id}.`);
+              .that.equals(`Meal not found`);
             done();
           });
       });
@@ -245,17 +246,17 @@ describe("Manage meals", () => {
             status.should.equals(200);
             message.should.be.a("object").that.contains({
               id: 1,
-              name: "meal1",
-              description: "meal1 description",
+              name: "Meal A",
+              description: "description",
               isActive: 1,
               isVega: 1,
               isVegan: 1,
               isToTakeHome: 1,
-              dateTime: result.dateTime,
-              imageUrl: "image_url_meal1",
-              allergenes: result.allergenes,
-              maxAmountOfParticipants: 6,
-              price: result.price,
+              dateTime: message.dateTime,
+              imageUrl: "image url",
+              allergenes: message.allergenes,
+              maxAmountOfParticipants: 5,
+              price: message.price,
               cookId: 1,
             });
             done();
