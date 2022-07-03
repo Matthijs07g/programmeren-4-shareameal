@@ -172,7 +172,7 @@ let controller = {
       if (results.length > 0 && results[0].cookId != req.userId) {
         return res.status(403).json({
           status: 403,
-          message: `Meal not found or not authirized`,
+          message: `Meal not found or not authorized`,
         });
       } else {
     

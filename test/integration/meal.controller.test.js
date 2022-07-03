@@ -9,7 +9,8 @@ require("dotenv").config();
 const dbconnection = require("../../database/dbconnection");
 const jwt = require("jsonwebtoken");
 const { jwtSecretKey, logger } = require("../../src/config/config");
-const { expect } = require("chai")
+const { expect } = require("chai");
+const { error } = require("console");
 
 chai.should();
 chai.use(chaiHttp);
@@ -248,7 +249,7 @@ describe("Manage meals", () => {
               id: 1,
               name: "Meal A",
               description: "description",
-              isActive: 1,
+              isActive: 0,
               isVega: 1,
               isVegan: 1,
               isToTakeHome: 1,
@@ -287,9 +288,9 @@ describe("Manage meals", () => {
           .delete("/api/meal/1")
           .end((err, res) => {
             res.should.be.an("object");
-            let { status, message } = res.body;
+            let { status, error } = res.body;
             status.should.equals(401);
-            message.should.be
+            error.should.be
               .a("string")
               .that.equals("Authorization header missing!");
             done();
@@ -307,7 +308,7 @@ describe("Manage meals", () => {
             message.should.be
               .a("string")
               .that.equals(
-                "Meal doesn't exists, or not authorized to delete the meal."
+                "Meal not found or not authorized"
               );
             done();
           });
@@ -331,8 +332,8 @@ describe("Manage meals", () => {
       it("TC-305-5 maaltijd verwijderd", (done) => {
         chai
           .request(server)
-          .delete("/api/meal/2")
-          .set("authorization", "Bearer " + jwt.sign({ userId: 2 }, jwtSecretKey))
+          .delete("/api/meal/1")
+          .set("authorization", "Bearer " + jwt.sign({ userId: 1 }, jwtSecretKey))
           .end((err, res) => {
             res.should.be.an("object");
             let { status, message } = res.body;
