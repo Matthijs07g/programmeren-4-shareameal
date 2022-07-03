@@ -185,7 +185,7 @@ let controller = {
             console.log(results[1]);
             res.status(200).json({
               status: 200,
-              result: results[1],
+              message: results[1],
             });
           }
         }

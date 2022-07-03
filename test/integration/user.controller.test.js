@@ -557,9 +557,9 @@ describe("Manage users", () => {
         })
         .end((err, res) => {
           res.should.be.an("object");
-          let { status, result } = res.body;
+          let { status, message } = res.body;
           status.should.equals(200);
-          result.should.be.a("object").that.contains({
+          message.should.be.a("object").that.contains({
           id: 1,
           firstName: "Matthijs",
           lastName: "van Gastel",
