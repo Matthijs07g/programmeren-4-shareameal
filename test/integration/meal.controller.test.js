@@ -90,7 +90,7 @@ describe("Manage meals", () => {
             status.should.equals(400);
             result.should.be
               .a("string")
-              .that.equals("name must be of type string");
+              .that.equals("name must be a string");
             done();
           });
       });
@@ -219,10 +219,10 @@ describe("Manage meals", () => {
         });
       });
       it("TC-304-1, maaltijd bestaat niet", (done) => {
-        let id = 0;
         chai
           .request(server)
-          .get(`/api/meal/${id}`)
+          .get(`/api/meal/0`)
+          .set("authorization", "Bearer " + jwt.sign({ userId: 1 }, jwtSecretKey))
           .end((err, res) => {
             res.should.be.an("object");
             let { status, message } = res.body;
@@ -235,10 +235,10 @@ describe("Manage meals", () => {
       });
   
       it("TC-304-2, maaltijd bestaat", (done) => {
-        let id = 1;
         chai
           .request(server)
-          .get(`/api/meal/${id}`)
+          .get(`/api/meal/1`)
+          .set("authorization", "Bearer " + jwt.sign({ userId: 1 }, jwtSecretKey))
           .end((err, res) => {
             res.should.be.an("object");
             let { status, message } = res.body;
