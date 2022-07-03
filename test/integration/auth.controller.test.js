@@ -152,7 +152,6 @@ const INSERT_MEALS =
             result.should.be.a("object").that.contains({
               id: result.id,
               emailAdress: "name@server.nl",
-              password: "secret",
               firstName: "first",
               lastName: "last",
               
