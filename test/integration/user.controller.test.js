@@ -560,7 +560,6 @@ describe("Manage users", () => {
           let { status, message } = res.body;
           status.should.equals(200);
           message.should.be.a("object").that.contains({
-          id: 1,
           firstName: "Matthijs",
           lastName: "van Gastel",
           street: "lovendijk",
