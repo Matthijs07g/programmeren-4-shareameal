@@ -165,7 +165,7 @@ let controller = {
     [Id],
     function (error, results, fields) {
       // When done with the connection, release it.
-      connection.release();
+      // connection.release();
       // Handle error after the release.
       if (error) throw error;
       // succesfull query handlers

@@ -117,9 +117,9 @@ describe("Manage meals", () => {
           })
           .end((err, res) => {
             res.should.be.an("object");
-            let { status, message } = res.body;
+            let { status, error } = res.body;
             status.should.equals(401);
-            message.should.be
+            error.should.be
               .a("string")
               .that.equals("Authorization header missing!");
             done();
@@ -250,9 +250,9 @@ describe("Manage meals", () => {
               name: "Meal A",
               description: "description",
               isActive: 0,
-              isVega: 1,
-              isVegan: 1,
-              isToTakeHome: 1,
+              isVega: 0,
+              isVegan: 0,
+              isToTakeHome: 0,
               dateTime: message.dateTime,
               imageUrl: "image url",
               allergenes: message.allergenes,
