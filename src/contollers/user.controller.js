@@ -45,7 +45,7 @@ let controller = {
       const phoneNumber = user.phoneNumber;
 
       connection.query(
-        "INSERT INTO user (firstName, lastName, street, city, password, emailAdress) VALUES(?, ?, ?, ?, ?, ?, ?); SELECT * FROM user WHERE emailAdress = ?",
+        "INSERT INTO user (firstName, lastName, street, city, password, emailAdress, phoneNumber) VALUES(?, ?, ?, ?, ?, ?, ?); SELECT * FROM user WHERE emailAdress = ?",
         [firstName, lastName, street, city, password, emailAdress, phoneNumber, emailAdress],
         function (error, results, fields) {
           if (error) {
@@ -126,7 +126,7 @@ let controller = {
     });
   },
   getUserProfile:(req, res, next) =>{
-    const Id = req.params.Id;
+    const Id = req.userId;
     dbconnection.getConnection(function (err, connection) {
       if (err) throw err; // not connected!
       connection.query(
