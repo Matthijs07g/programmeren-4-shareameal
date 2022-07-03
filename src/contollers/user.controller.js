@@ -215,7 +215,7 @@ let controller = {
           status: 400,
           message: "User not found",
         });
-      }
+      }else
       if (results.length > 0 && results[0].Id != req.userId) {
         return res.status(403).json({
           status: 403,
