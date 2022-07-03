@@ -133,6 +133,7 @@ let controller = {
         "SELECT * FROM user WHERE id = ?;",
         [Id],
         function (error, results, fields) {
+          connection.release();
           if (error) {
             console.log(error);
             next(error)
