@@ -138,10 +138,10 @@ describe("Manage meals", () => {
             isVega: true,
             isVegan: true,
             isToTakeHome: true,
-            dateTime: "2022-05-21 07:11:46",
+            dateTime: "2022-07-03 07:11:46",
             imageUrl:
               "https://miljuschka.nl/wp-content/uploads/2021/02/Pasta-bolognese-3-2.jpg",
-            allergenes: "gluten, lactose",
+            allergenes: "gluten",
             maxAmountOfParticipants: 6,
             price: 6.75,
           })
