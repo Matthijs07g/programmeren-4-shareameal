@@ -13,7 +13,7 @@ jobs:
       DB_HOST: localhost
       DB_PORT: 3306
       DB_DATABASE: testdb
-      DB_USER: root
+      DB_USER: newuser
       DB_PASSWORD: root
     services:
       mysql:
