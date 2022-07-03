@@ -137,7 +137,7 @@ let controller = {
           if (error) {
             console.log(error);
             next(error)
-            } else if (results.affectedRows >= 1) {
+            } else if (results.affectedRows > 0) {
               console.log(results[1]);
               res.status(200).json({
                 status: 200,
