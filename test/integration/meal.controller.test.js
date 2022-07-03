@@ -27,10 +27,10 @@ const CLEAR_DB =
  * Voeg een user toe aan de database. Deze user heeft id 1.
  * Deze id kun je als foreign key gebruiken in de andere queries, bv insert meal.
  */
-const INSERT_USER =
-"INSERT INTO `user` (`id`, `firstName`, `lastName`, `emailAdress`, `password`, `street`, `city`, 'isActive' ) VALUES" +
-'(1, "first", "last", "name@server.nl", "secret", "street", "city", "1"),'+
-"(2, 'abc', 'def', 'test@test.nl', 'secret', 'street', 'city', '0' )";
+ const INSERT_USER =
+ "INSERT INTO `user` (`id`, `firstName`, `lastName`, `emailAdress`, `password`, `street`, `city`, `isActive`, phoneNumber) VALUES" +
+ '(1, "first", "last", "name@server.nl", "secret", "street", "city", 1, "0612345678"),'+
+ "(2, 'abcde', 'fghi', 'test@test.nl', 'secret', 'street', 'city', 0, '0612345678');";
 
 
 /**
@@ -50,7 +50,7 @@ describe("Manage meals", () => {
 
         // Use the connection
         connection.query(
-          CLEAR_DB + INSERT_USER,
+          CLEAR_DB + INSERT_USER + INSERT_MEALS,
           function (error, results, fields) {
             // When done with the connection, release it.
             connection.release();
