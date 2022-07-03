@@ -237,7 +237,6 @@ let controller = {
               message: "User has been deleted",
             });
           } else {
-            connection.release();
             res.status(400).json({
               status: 400,
               message: "User not found",
