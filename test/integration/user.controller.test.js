@@ -638,7 +638,7 @@ describe("Manage users", () => {
         });
     });
 
-    it("TC-206-4 deleting user succesfull", (done) => {
+    it("TC-206-4 user verwijderd", (done) => {
       chai
         .request(server)
         .delete(`/api/user/1`)

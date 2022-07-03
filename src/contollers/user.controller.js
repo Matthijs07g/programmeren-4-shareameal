@@ -141,7 +141,7 @@ let controller = {
               console.log(results[1]);
               res.status(200).json({
                 status: 200,
-                result: results[1],
+                result: results[0],
             });
           } else {
             res.status(401).json({
@@ -212,6 +212,7 @@ let controller = {
       // succesfull query handlers
       
       if (results.length > 0 && results[0].Id != req.userId) {
+        connection.release();
         return res.status(403).json({
           status: 403,
           message: `user not found or not authorized`,
