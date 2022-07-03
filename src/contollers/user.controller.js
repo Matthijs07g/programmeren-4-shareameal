@@ -183,9 +183,10 @@ let controller = {
             });
           } else {
             console.log(results[1]);
+            let user = {id: req.params.userId, ...req.body}
             res.status(200).json({
               status: 200,
-              message: results[1],
+              message: user,
             });
           }
         }
