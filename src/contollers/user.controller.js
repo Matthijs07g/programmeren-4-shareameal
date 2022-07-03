@@ -195,23 +195,22 @@ let controller = {
     });
   },
   deleteUser: (req, res, next) => {
-    const Id = req.params.Id;
+    const delId = req.params.Id;
     dbconnection.getConnection(function (err, connection) {
       //not connected
       if (err) {
         next(err);
       }
       connection.query(
-    "SELECT * FROM user WHERE id = ?",
-    [Id],
+    "SELECT id FROM user WHERE id = ?",
+    [delId],
     function (error, results, fields) {
       // When done with the connection, release it.
        
       // Handle error after the release.
       if (error) throw error;
       // succesfull query handlers
-      
-      if (results.length > 0 && results[0].Id != req.userId) {
+      if (results.length > 0 && delId != req.userId) {
         connection.release();
         return res.status(403).json({
           status: 403,
@@ -223,7 +222,7 @@ let controller = {
       // Use the connection
       connection.query(
         "DELETE FROM user WHERE id=?",
-        [Id],
+        [delId],
         function (error, results, fields) {
           // When done with the connection, release it.
           connection.release();
