@@ -331,7 +331,7 @@ describe("Manage users", () => {
     it("TC-203-2 valid token", (done) => {
       chai
         .request(server)
-        .get(`/api/user/profile`)
+        .get(`/api/profile`)
         .set("authorization", "Bearer " + jwt.sign({ userId: 1 }, jwtSecretKey))
         .end((err, res) => {
           res.should.be.an("object");
