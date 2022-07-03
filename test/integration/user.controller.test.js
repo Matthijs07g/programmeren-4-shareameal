@@ -460,7 +460,7 @@ describe("Manage users", () => {
           res.should.be.an("object");
           let { status, result } = res.body;
           status.should.equals(400);
-          result.should.be.a("string").that.equals("emailaddress must be of type string");
+          result.should.be.a("string").that.equals("Emailaddress must be a string");
           done();
         });
     });
@@ -484,7 +484,7 @@ describe("Manage users", () => {
           res.should.be.an("object");
           let { status, result } = res.body;
           status.should.equals(400);
-          result.should.be.a("string").that.equals("phonenumber must be of type string");
+          result.should.be.a("string").that.equals("Phonenumber must be a string");
           done();
         });
     });
