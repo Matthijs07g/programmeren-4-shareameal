@@ -88,15 +88,13 @@ let controller = {
           price,
         ],
         function (error, results, fields) {
-          if (error) {
-            console.log(error);
-          } else {
+          connection.release();
+          if (error)  throw error
             console.log(results[1]);
             res.status(201).json({
               status: 201,
               result: results[1],
             });
-          }
         }
       );
     });
