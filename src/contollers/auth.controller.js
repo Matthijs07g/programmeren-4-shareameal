@@ -43,7 +43,7 @@ module.exports = {
                     logger.debug("User logged in, sending: ", userinfo);
                     res.status(200).json({
                       status: 200,
-                      results: { ...userinfo, token },
+                      result: { ...userinfo, token },
                     });
                   }
                 );

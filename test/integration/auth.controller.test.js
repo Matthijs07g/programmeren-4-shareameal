@@ -44,7 +44,7 @@ const INSERT_MEALS =
   "(2, 'Meal B', 'description', 'image url', NOW(), 5, 6.50, 1);";
 
   describe("Login", () => {
-    describe("UC-101, login /api/auth/login ", () => {
+    describe("UC-101, login /auth/login ", () => {
       beforeEach((done) => {
         logger.debug("loginTests: beforeEach called.");
         dbconnection.getConnection(function (err, connection) {
@@ -93,7 +93,7 @@ const INSERT_MEALS =
             res.should.be.an("object");
             let { status, result } = res.body;
             status.should.equals(400);
-            result.should.be.a("string").that.equals("Emailaddress isn't valid");
+            result.should.be.a("string").that.equals("email must be a string");
             done();
           });
       });
