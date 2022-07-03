@@ -633,7 +633,7 @@ describe("Manage users", () => {
           status.should.equals(403);
           message.should.be
             .a("string")
-            .that.equals(`Not authorized to delete the user.`);
+            .that.equals(`user not found or not authorized`);
           done();
         });
     });

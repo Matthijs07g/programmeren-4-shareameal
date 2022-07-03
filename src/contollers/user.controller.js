@@ -210,6 +210,12 @@ let controller = {
       // Handle error after the release.
       if (error) throw error;
       // succesfull query handlers
+      if(results.length<1){
+        res.status(400).json({
+          status: 400,
+          message: "User not found",
+        });
+      }
       if (results.length > 0 && results[0].Id != req.userId) {
         return res.status(403).json({
           status: 403,
@@ -237,7 +243,7 @@ let controller = {
           } else {
             res.status(404).json({
               status: 404,
-              message: "User not found",
+              message: "Unkown error",
             });
           }
         }
