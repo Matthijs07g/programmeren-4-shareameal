@@ -72,9 +72,9 @@ const INSERT_MEALS =
           })
           .end((err, res) => {
             res.should.be.an("object");
-            let { status, message } = res.body;
+            let { status, result } = res.body;
             status.should.equals(400);
-            message.should.be
+            result.should.be
               .a("string")
               .that.equals("password must be a string.");
             done();
@@ -91,9 +91,9 @@ const INSERT_MEALS =
           })
           .end((err, res) => {
             res.should.be.an("object");
-            let { status, message } = res.body;
+            let { status, result } = res.body;
             status.should.equals(400);
-            message.should.be.a("string").that.equals("Emailaddress isn't valid");
+            result.should.be.a("string").that.equals("Emailaddress isn't valid");
             done();
           });
       });
