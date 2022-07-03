@@ -72,11 +72,12 @@ module.exports = {
         "password must be a string."
       );
       next();
-    } catch (ex) {
-      res.status(422).json({
-        error: ex.toString(),
-        datetime: new Date().toISOString(),
-      });
+    } catch (err) {
+      const error = {
+        status: 400,
+        result: err.message,
+      };
+      next(error);
     }
   },
 
