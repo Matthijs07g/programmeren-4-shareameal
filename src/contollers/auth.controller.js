@@ -25,7 +25,7 @@ module.exports = {
                 status: 404,
                 message: "user not found",
               });
-            }
+            }else{
             if (rows) {
               if (
                 rows &&
@@ -60,6 +60,7 @@ module.exports = {
                   message: "password invalid",
                 });
               }
+            }
             }
           }
         );
