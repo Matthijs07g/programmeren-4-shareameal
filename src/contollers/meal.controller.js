@@ -32,7 +32,7 @@ let controller = {
       );
       assert(typeof dateTime === "string", "dateTime must be a string");
       assert(typeof imageUrl === "string", "imageUrl must be a string");
-      assert(typeof allergenes === "array", "allergenes must be a array");
+      assert(typeof allergenes === "string", "allergenes must be a string");
       assert(
         typeof maxAmountOfParticipants === "number",
         "maxAmountOfParticipants must be a number"

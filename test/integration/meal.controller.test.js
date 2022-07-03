@@ -141,10 +141,9 @@ describe("Manage meals", () => {
             dateTime: "2022-05-21 07:11:46",
             imageUrl:
               "https://miljuschka.nl/wp-content/uploads/2021/02/Pasta-bolognese-3-2.jpg",
-            allergenes: ["gluten", "lactose"],
+            allergenes: "gluten, lactose",
             maxAmountOfParticipants: 6,
             price: 6.75,
-            cookId: 1,
           })
           .end((err, res) => {
             res.should.be.an("object");
