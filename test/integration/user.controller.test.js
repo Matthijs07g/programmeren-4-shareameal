@@ -27,8 +27,9 @@ const CLEAR_DB =
  * Deze id kun je als foreign key gebruiken in de andere queries, bv insert meal.
  */
 const INSERT_USER =
-  "INSERT INTO `user` (`id`, `firstName`, `lastName`, `emailAdress`, `password`, `street`, `city` ) VALUES" +
-  '(1, "first", "last", "name@server.nl", "secret", "street", "city");';
+  "INSERT INTO `user` (`id`, `firstName`, `lastName`, `emailAdress`, `password`, `street`, `city`,'isActive' ) VALUES" +
+  '(1, "first", "last", "name@server.nl", "secret", "street", "city", "1"),'+
+  "(2, 'abc', 'def', 'test@test.nl', 'secret', 'street', 'city', '0' )";
 
 /**
  * Query om twee meals toe te voegen. Let op de cookId, die moet matchen
