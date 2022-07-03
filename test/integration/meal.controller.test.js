@@ -324,7 +324,7 @@ describe("Manage meals", () => {
             status.should.equals(404);
             message.should.be
               .a("string")
-              .that.equals("Deleting meal with id 0 failed. It does not exist.");
+              .that.equals("Meal not found");
             done();
           });
       });
