@@ -24,11 +24,11 @@ let controller = {
       assert(typeof name === "string", "name must be a string");
       assert(typeof description === "string", "description must be a string");
       assert(typeof isActive === "boolean", "isActive must be a boolean");
-      assert(typeof isVega === "boolean", "isVega must be a string");
-      assert(typeof isVegan === "boolean", "isVegan must be a string");
+      assert(typeof isVega === "boolean", "isVega must be a boolean");
+      assert(typeof isVegan === "boolean", "isVegan must be a boolean");
       assert(
         typeof isToTakeHome === "boolean",
-        "isToTakeHome must be a string"
+        "isToTakeHome must be a boolean"
       );
       assert(typeof dateTime === "string", "dateTime must be a string");
       assert(typeof imageUrl === "string", "imageUrl must be a string");

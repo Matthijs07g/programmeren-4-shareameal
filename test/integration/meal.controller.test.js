@@ -28,7 +28,7 @@ const CLEAR_DB =
  * Deze id kun je als foreign key gebruiken in de andere queries, bv insert meal.
  */
 const INSERT_USER =
-"INSERT INTO `user` (`id`, `firstName`, `lastName`, `emailAdress`, `password`, `street`, `city`,'isActive' ) VALUES" +
+"INSERT INTO `user` (`id`, `firstName`, `lastName`, `emailAdress`, `password`, `street`, `city`, 'isActive' ) VALUES" +
 '(1, "first", "last", "name@server.nl", "secret", "street", "city", "1"),'+
 "(2, 'abc', 'def', 'test@test.nl', 'secret', 'street', 'city', '0' )";
 
