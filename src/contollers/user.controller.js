@@ -137,7 +137,7 @@ let controller = {
           if (error) {
             console.log(error);
             next(error)
-            } else if (results.affectedRows > 0) {
+            } else if (results.affectedRows > 1) {
               console.log(results[1]);
               res.status(200).json({
                 status: 200,
@@ -210,12 +210,7 @@ let controller = {
       // Handle error after the release.
       if (error) throw error;
       // succesfull query handlers
-      if(results.length<1){
-        res.status(400).json({
-          status: 400,
-          message: "User not found",
-        });
-      }else{
+      
       if (results.length > 0 && results[0].Id != req.userId) {
         return res.status(403).json({
           status: 403,
@@ -241,15 +236,14 @@ let controller = {
               message: "User has been deleted",
             });
           } else {
-            res.status(404).json({
-              status: 404,
-              message: "Unkown error",
+            res.status(400).json({
+              status: 400,
+              message: "User not found",
             });
           }
         }
       );
     }
-  }
   }
   );
   });
