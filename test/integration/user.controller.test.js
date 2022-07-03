@@ -321,9 +321,9 @@ describe("Manage users", () => {
         .set("authorization", "Bearer " + jwt.sign({ userId: 1 }, jwtSecretKey) + "AN_UNVALID_PART")
         .end((err, res) => {
           res.should.be.an("object");
-          let { status, message } = res.body;
+          let { status, error } = res.body;
           status.should.equals(401);
-          message.should.be.a("string").that.equals(`Not authorized`);
+          error.should.be.a("string").that.equals(`Not authorized`);
           done();
         });
     });
@@ -377,11 +377,12 @@ describe("Manage users", () => {
       chai
         .request(server)
         .get("/api/user/hallo")
+        .set("authorization", "Bearer " + jwt.sign({ userId: 1 }, jwtSecretKey) + "AN_UNVALID_PART")
         .end((err, res) => {
           res.should.be.an("object");
-          let { status, message } = res.body;
+          let { status, error } = res.body;
           status.should.equals(401);
-          message.should.be.a("string").that.equals("Token is invalid");
+          error.should.be.a("string").that.equals("Token is invalid");
           done();
         });
     });
@@ -389,6 +390,7 @@ describe("Manage users", () => {
       chai
         .request(server)
         .get("/api/user/69")
+        .set("authorization", "Bearer " + jwt.sign({ userId: 1 }, jwtSecretKey))
         .end((err, res) => {
           res.should.be.an("object");
           let { status, message } = res.body;
@@ -401,6 +403,7 @@ describe("Manage users", () => {
       chai
         .request(server)
         .get("/api/user/1")
+        .set("authorization", "Bearer " + jwt.sign({ userId: 1 }, jwtSecretKey))
         .end((err, res) => {
           res.should.be.an("object");
           let { status, message } = res.body;
@@ -455,9 +458,9 @@ describe("Manage users", () => {
         })
         .end((err, res) => {
           res.should.be.an("object");
-          let { status, message } = res.body;
+          let { status, result } = res.body;
           status.should.equals(400);
-          message.should.be.a("string").that.equals("emailaddress must be of type string");
+          result.should.be.a("string").that.equals("emailaddress must be of type string");
           done();
         });
     });
@@ -479,9 +482,9 @@ describe("Manage users", () => {
         })
         .end((err, res) => {
           res.should.be.an("object");
-          let { status, message } = res.body;
+          let { status, result } = res.body;
           status.should.equals(400);
-          message.should.be.a("string").that.equals("Phonenumber isn't valid.");
+          result.should.be.a("string").that.equals("phonenumber must be of type string");
           done();
         });
     });
@@ -529,9 +532,9 @@ describe("Manage users", () => {
         })
         .end((err, res) => {
           res.should.be.an("object");
-          let { status, message } = res.body;
+          let { status, error } = res.body;
           status.should.equals(401);
-          message.should.be
+          error.should.be
             .a("string")
             .that.equals("Authorization header missing!");
           done();
@@ -611,9 +614,9 @@ describe("Manage users", () => {
         .delete(`/api/user/1`)
         .end((err, res) => {
           res.should.be.an("object");
-          let { status, message } = res.body;
+          let { status, error } = res.body;
           status.should.equals(401);
-          message.should.be
+          error.should.be
             .a("string")
             .that.equals(`Authorization header missing!`);
           done();
@@ -643,7 +646,7 @@ describe("Manage users", () => {
         .set("authorization", "Bearer " + jwt.sign({ userId: 1 }, jwtSecretKey))
         .end((err, res) => {
           res.should.be.an("object");
-          let { status, result } = res.body;
+          let { status, message } = res.body;
           status.should.equals(200);
           message.should.be
             .a("string")

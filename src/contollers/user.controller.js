@@ -195,8 +195,26 @@ let controller = {
   deleteUser: (req, res, next) => {
     const Id = req.params.Id;
     dbconnection.getConnection(function (err, connection) {
-      if (err) throw err; // not connected!
-
+      //not connected
+      if (err) {
+        next(err);
+      }
+      connection.query(
+    "SELECT * FROM user WHERE id = ?",
+    [Id],
+    function (error, results, fields) {
+      // When done with the connection, release it.
+      // connection.release();
+      // Handle error after the release.
+      if (error) throw error;
+      // succesfull query handlers
+      if (results.length > 0 && results[0].Id != req.userId) {
+        return res.status(403).json({
+          status: 403,
+          message: `user not found or not authorized`,
+        });
+      } else {
+    
       // Use the connection
       connection.query(
         "DELETE FROM user WHERE id=?",
@@ -215,14 +233,17 @@ let controller = {
               message: "User has been deleted",
             });
           } else {
-            res.status(400).json({
-              status: 400,
+            res.status(404).json({
+              status: 404,
               message: "User not found",
             });
           }
         }
       );
-    });
-  },
-};
+    }
+  }
+  );
+  });
+}
+}
 module.exports = controller;
