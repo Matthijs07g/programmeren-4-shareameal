@@ -206,7 +206,7 @@ let controller = {
     [Id],
     function (error, results, fields) {
       // When done with the connection, release it.
-      // connection.release();
+       
       // Handle error after the release.
       if (error) throw error;
       // succesfull query handlers
@@ -216,8 +216,9 @@ let controller = {
           status: 403,
           message: `user not found or not authorized`,
         });
+      
       } else {
-    
+        
       // Use the connection
       connection.query(
         "DELETE FROM user WHERE id=?",
@@ -236,6 +237,7 @@ let controller = {
               message: "User has been deleted",
             });
           } else {
+            connection.release();
             res.status(400).json({
               status: 400,
               message: "User not found",
