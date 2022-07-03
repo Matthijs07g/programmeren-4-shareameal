@@ -152,13 +152,10 @@ const INSERT_MEALS =
             result.should.be.a("object").that.contains({
               id: result.id,
               emailAdress: "name@server.nl",
-              isActive: result.isActive,
               password: "secret",
               firstName: "first",
               lastName: "last",
-              city: "city",
-              street: "street",
-  
+              
               token: result.token,
             });
             done();
