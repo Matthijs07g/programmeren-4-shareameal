@@ -576,7 +576,7 @@ describe("Manage users", () => {
 
   describe("UC-206 Gebruiker verwijderen", () => {
     beforeEach((done) => {
-      logger.debug("userTests: beforeEach called.");
+      logger.info("userTests: beforeEach called.");
       dbconnection.getConnection(function (err, connection) {
         if (err) throw err; // not connected!
         connection.query(
