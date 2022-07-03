@@ -9,6 +9,7 @@ require("dotenv").config();
 const dbconnection = require("../../database/dbconnection");
 const jwt = require("jsonwebtoken");
 const { jwtSecretKey, logger } = require("../../src/config/config");
+const { expect } = require("chai")
 
 chai.should();
 chai.use(chaiHttp);
@@ -27,8 +28,9 @@ const CLEAR_DB =
  * Deze id kun je als foreign key gebruiken in de andere queries, bv insert meal.
  */
 const INSERT_USER =
-  "INSERT INTO `user` (`id`, `firstName`, `lastName`, `emailAdress`, `password`, `street`, `city` ) VALUES" +
-  '(1, "first", "last", "name@server.nl", "secret", "street", "city");';
+  "INSERT INTO `user` (`id`, `firstName`, `lastName`, `emailAdress`, `password`, `street`, `city`, `isActive`, phoneNumber) VALUES" +
+  '(1, "first", "last", "name@server.nl", "secret", "street", "city", 1, "0612345678"),'+
+  "(2, 'abcde', 'fghi', 'test@test.nl', 'secret', 'street', 'city', 0, '0612345678');";
 
 /**
  * Query om twee meals toe te voegen. Let op de cookId, die moet matchen
@@ -65,6 +67,7 @@ describe("Manage users", () => {
       chai
         .request(server)
         .post("/api/user")
+        .set("authorization", "Bearer " + jwt.sign({ userId: 1 }, jwtSecretKey))
         .send({
           firstName: "Mark",
           lastName: "Doe",
@@ -87,6 +90,7 @@ describe("Manage users", () => {
       chai
         .request(server)
         .post("/api/user")
+        .set("authorization", "Bearer " + jwt.sign({ userId: 1 }, jwtSecretKey))
         .send({
           firstName: "Mark",
           lastName: "Doe",
@@ -109,6 +113,7 @@ describe("Manage users", () => {
       chai
         .request(server)
         .post("/api/user")
+        .set("authorization", "Bearer " + jwt.sign({ userId: 1 }, jwtSecretKey))
         .send({
           firstName: "Mark",
           lastName: "Doe",
@@ -129,6 +134,7 @@ describe("Manage users", () => {
       chai
         .request(server)
         .post("/api/user")
+        .set("authorization", "Bearer " + jwt.sign({ userId: 1 }, jwtSecretKey))
         .send({
           firstName: "Mark",
           lastName: "Doe",
@@ -150,6 +156,7 @@ describe("Manage users", () => {
       chai
         .request(server)
         .post("/api/user")
+        .set("authorization", "Bearer " + jwt.sign({ userId: 1 }, jwtSecretKey))
         .send({
           firstName: "Peter",
           lastName: "Janssen",
@@ -190,8 +197,8 @@ describe("Manage users", () => {
     it("TC-202-1 toon nul gebruikers", (done) => {
       chai
         .request(server)
-        .get("/api/user?length=0")
-        //.set("authorization", "Bearer " + jwt.sign({ userId: 1 }, jwtSecretKey))
+        .get("/api/user?count=0")
+        .set("authorization", "Bearer " + jwt.sign({ userId: 1 }, jwtSecretKey))
         .end((err, res) => {
           res.should.be.an("object");
           let { status, result } = res.body;
@@ -204,8 +211,8 @@ describe("Manage users", () => {
     it("TC-202-2 toon 2 gebruikers", (done) => {
       chai
         .request(server)
-        .get("/api/user?length=2")
-        // .set("authorization", "Bearer " + jwt.sign({ userId: 1 }, jwtSecretKey))
+        .get("/api/user?count=2")
+        .set("authorization", "Bearer " + jwt.sign({ userId: 1 }, jwtSecretKey))
         .end((err, res) => {
           res.should.be.an("object");
           let { status, result } = res.body;
@@ -220,7 +227,7 @@ describe("Manage users", () => {
       chai
         .request(server)
         .get("/api/user?firstName=aaaaa")
-        // .set("authorization", "Bearer " + jwt.sign({ userId: 1 }, jwtSecretKey))
+        .set("authorization", "Bearer " + jwt.sign({ userId: 1 }, jwtSecretKey))
         .end((err, res) => {
           res.should.be.an("object");
           let { status, result } = res.body;
@@ -234,8 +241,8 @@ describe("Manage users", () => {
     it("TC-202-4 toon gebruikers met isActive = false.", (done) => {
       chai
         .request(server)
-        .get("/api/user?isActive=false")
-        // .set("authorization", "Bearer " + jwt.sign({ userId: 1 }, jwtSecretKey))
+        .get("/api/user?isActive=0")
+        .set("authorization", "Bearer " + jwt.sign({ userId: 1 }, jwtSecretKey))
         .end((err, res) => {
           res.should.be.an("object");
           let { status, result } = res.body;
@@ -249,8 +256,8 @@ describe("Manage users", () => {
     it("TC-202-5 toon gebruikers met isActive = true.", (done) => {
       chai
         .request(server)
-        .get("/api/user?isActive=false")
-        // .set("authorization", "Bearer " + jwt.sign({ userId: 1 }, jwtSecretKey))
+        .get("/api/user?isActive=1")
+        .set("authorization", "Bearer " + jwt.sign({ userId: 1 }, jwtSecretKey))
         .end((err, res) => {
           res.should.be.an("object");
           let { status, result } = res.body;
@@ -265,7 +272,7 @@ describe("Manage users", () => {
       chai
         .request(server)
         .get("/api/user?firstName=first")
-        // .set("authorization", "Bearer " + jwt.sign({ userId: 1 }, jwtSecretKey))
+        .set("authorization", "Bearer " + jwt.sign({ userId: 1 }, jwtSecretKey))
         .end((err, res) => {
           res.should.be.an("object");
           let { status, result } = res.body;
@@ -279,7 +286,7 @@ describe("Manage users", () => {
             isActive: result[0].isActive,
             emailAdress: "name@server.nl",
             password: "secret",
-            phoneNumber: "",
+            phoneNumber: "0612345678",
             street: "street",
             city: "city",
           });
@@ -288,85 +295,63 @@ describe("Manage users", () => {
     });
   });
 
-  // describe("UC-203 get Profile", () => {
-  //   beforeEach((done) => {
-  //     logger.debug("userTests: beforeEach called.");
-  //     dbconnection.getConnection(function (err, connection) {
-  //       if (err) throw err; // not connected!
-  //       connection.query(
-  //         CLEAR_DB + INSERT_USER,
-  //         function (error, results, fields) {
-  //           // When done with the connection, release it.
-  //           connection.release();
+  describe("UC-203 get Profile", () => {
+    beforeEach((done) => {
+      logger.debug("userTests: beforeEach called.");
+      dbconnection.getConnection(function (err, connection) {
+        if (err) throw err; // not connected!
+        connection.query(
+          CLEAR_DB + INSERT_USER,
+          function (error, results, fields) {
+            // When done with the connection, release it.
+            connection.release();
 
-  //           // Handle error after the release.
-  //           if (error) throw error;
-  //           done();
-  //         }
-  //       );
-  //     });
-  //   });
+            // Handle error after the release.
+            if (error) throw error;
+            done();
+          }
+        );
+      });
+    });
 
-  //   it("TC-203-1 unvalid token", (done) => {
-  //     chai
-  //       .request(server)
-  //       .get(`/api/user/profile`)
-  //       .set(
-  //         "authorization",
-  //         "Bearer " + jwt.sign({ userId: 2 }, jwtSecretKey) + "AN_UNVALID_PART"
-  //       )
-  //       .end((err, res) => {
-  //         res.should.be.an("object");
-  //         let { status, message } = res.body;
-  //         status.should.equals(401);
-  //         message.should.be.a("string").that.equals(`Not authorized`);
-  //         done();
-  //       });
-  //   });
+    it("TC-203-1 unvalid token", (done) => {
+      chai
+        .request(server)
+        .get(`/api/user/profile`)
+        .set("authorization", "Bearer " + jwt.sign({ userId: 1 }, jwtSecretKey) + "AN_UNVALID_PART")
+        .end((err, res) => {
+          res.should.be.an("object");
+          let { status, error } = res.body;
+          status.should.equals(401);
+          error.should.be.a("string").that.equals(`Not authorized`);
+          done();
+        });
+    });
 
-  //   it("TC-203-2 valid token", (done) => {
-  //     chai
-  //       .request(server)
-  //       .get(`/api/user/profile`)
-  //       .set("authorization", "Bearer " + jwt.sign({ userId: 1 }, jwtSecretKey))
-  //       .end((err, res) => {
-  //         res.should.be.an("object");
-  //         let { status, result } = res.body;
-  //         status.should.equals(200);
-  //         result.should.be.a("object").that.contains({
-  //           id: result.id,
-  //           firstName: "Quincy",
-  //           lastName: "van Deursen",
-  //           street: "Lisdodde",
-  //           city: "Breda",
-  //           isActive: result.isActive,
-  //           password: "Secret1!",
-  //           emailAdress: "Quincyvandeursen@gmail.com",
-  //           phoneNumber: "0612345678",
-  //         });
-  //         done();
-  //       });
-  //   });
-  // });
-
-  // describe("UC-204 Details van gebruiker", () => {
-  //   beforeEach((done) => {
-  //     logger.debug("userTests: beforeEach called.");
-  //     dbconnection.getConnection(function (err, connection) {
-  //       if (err) throw err; // not connected!
-  //       connection.query(
-  //         CLEAR_DB + INSERT_USER,
-  //         function (error, results, fields) {
-  //           // When done with the connection, release it.
-  //           connection.release();
-
-  //           // Handle error after the release.
-  //           if (error) throw error;
-  //           done();
-  //         }
-  //       );
-  //     });
-  //   });
+    it("TC-203-2 valid token", (done) => {
+      chai
+        .request(server)
+        .get(`/api/profile`)
+        .set("authorization", "Bearer " + jwt.sign({ userId: 1 }, jwtSecretKey))
+        .end((err, res) => {
+          res.should.be.an("object");
+          let { status, result } = res.body;
+          status.should.equals(200);
+          result.should.be.a("object").that.contains({
+            id: result.id,
+            firstName: "first",
+            lastName: "last",
+            street: "street",
+            city: "city",
+            isActive: 1,
+            password: "secret",
+            emailAdress: "name@server.nl",
+            phoneNumber: "0612345678",
+          });
+          done();
+        });
+    });
+  });
   describe("UC-204 Details van gebruiker /api/user/:Id", () => {
     beforeEach((done) => {
       dbconnection.getConnection(function (err, connection) {
@@ -392,11 +377,12 @@ describe("Manage users", () => {
       chai
         .request(server)
         .get("/api/user/hallo")
+        .set("authorization", "Bearer " + jwt.sign({ userId: 1 }, jwtSecretKey) + "AN_UNVALID_PART")
         .end((err, res) => {
           res.should.be.an("object");
-          let { status, message } = res.body;
+          let { status, error } = res.body;
           status.should.equals(401);
-          message.should.be.a("string").that.equals("Token is invalid");
+          error.should.be.a("string").that.equals("Not authorized");
           done();
         });
     });
@@ -404,6 +390,7 @@ describe("Manage users", () => {
       chai
         .request(server)
         .get("/api/user/69")
+        .set("authorization", "Bearer " + jwt.sign({ userId: 1 }, jwtSecretKey))
         .end((err, res) => {
           res.should.be.an("object");
           let { status, message } = res.body;
@@ -416,6 +403,7 @@ describe("Manage users", () => {
       chai
         .request(server)
         .get("/api/user/1")
+        .set("authorization", "Bearer " + jwt.sign({ userId: 1 }, jwtSecretKey))
         .end((err, res) => {
           res.should.be.an("object");
           let { status, message } = res.body;
@@ -427,8 +415,7 @@ describe("Manage users", () => {
           isActive: 1,
           emailAdress: "name@server.nl",
           password: "secret",
-          phoneNumber: "",
-          roles: "",
+          roles: "editor,guest",
           street: "street",
           city: "city",
         })
@@ -459,7 +446,7 @@ describe("Manage users", () => {
       chai
         .request(server)
         .put(`/api/user/1`)
-        // .set("authorization", "Bearer " + jwt.sign({ userId: 2 }, jwtSecretKey))
+        .set("authorization", "Bearer " + jwt.sign({ userId: 1 }, jwtSecretKey))
         .send({
           firstName: "Matthijs",
           lastName: "van Gastel",
@@ -471,9 +458,9 @@ describe("Manage users", () => {
         })
         .end((err, res) => {
           res.should.be.an("object");
-          let { status, message } = res.body;
+          let { status, result } = res.body;
           status.should.equals(400);
-          message.should.be.a("string").that.equals("emailaddress must be of type string");
+          result.should.be.a("string").that.equals("Emailadress must be a string");
           done();
         });
     });
@@ -482,7 +469,7 @@ describe("Manage users", () => {
       chai
         .request(server)
         .put(`/api/user/1`)
-        // .set("authorization", "Bearer " + jwt.sign({ userId: 2 }, jwtSecretKey))
+        .set("authorization", "Bearer " + jwt.sign({ userId: 1 }, jwtSecretKey))
         .send({
           firstName: "Matthijs",
           lastName: "van Gastel",
@@ -495,9 +482,9 @@ describe("Manage users", () => {
         })
         .end((err, res) => {
           res.should.be.an("object");
-          let { status, message } = res.body;
+          let { status, result } = res.body;
           status.should.equals(400);
-          message.should.be.a("string").that.equals("Phonenumber isn't valid.");
+          result.should.be.a("string").that.equals("Phonenumber must be a string");
           done();
         });
     });
@@ -506,7 +493,7 @@ describe("Manage users", () => {
       chai
         .request(server)
         .put(`/api/user/99999999999`)
-        // .set("authorization", "Bearer " + jwt.sign({ userId: 2 }, jwtSecretKey))
+        .set("authorization", "Bearer " + jwt.sign({ userId: 1 }, jwtSecretKey))
         .send({
           firstName: "Matthijs",
           lastName: "van Gastel",
@@ -545,9 +532,9 @@ describe("Manage users", () => {
         })
         .end((err, res) => {
           res.should.be.an("object");
-          let { status, message } = res.body;
+          let { status, error } = res.body;
           status.should.equals(401);
-          message.should.be
+          error.should.be
             .a("string")
             .that.equals("Authorization header missing!");
           done();
@@ -557,7 +544,7 @@ describe("Manage users", () => {
       chai
         .request(server)
         .put(`/api/user/1`)
-        // .set("authorization", "Bearer " + jwt.sign({ userId: 2 }, jwtSecretKey))
+        .set("authorization", "Bearer " + jwt.sign({ userId: 1 }, jwtSecretKey))
         .send({
           firstName: "Matthijs",
           lastName: "van Gastel",
@@ -570,10 +557,9 @@ describe("Manage users", () => {
         })
         .end((err, res) => {
           res.should.be.an("object");
-          let { status, result } = res.body;
+          let { status, message } = res.body;
           status.should.equals(200);
-          result.should.be.a("object").that.contains({
-          id: 1,
+          message.should.be.a("object").that.contains({
           firstName: "Matthijs",
           lastName: "van Gastel",
           street: "lovendijk",
@@ -590,7 +576,7 @@ describe("Manage users", () => {
 
   describe("UC-206 Gebruiker verwijderen", () => {
     beforeEach((done) => {
-      logger.debug("userTests: beforeEach called.");
+      logger.info("userTests: beforeEach called.");
       dbconnection.getConnection(function (err, connection) {
         if (err) throw err; // not connected!
         connection.query(
@@ -611,7 +597,7 @@ describe("Manage users", () => {
       chai
         .request(server)
         .delete(`/api/user/99999999`)
-        // .set("authorization", "Bearer " + jwt.sign({ userId: 1 }, jwtSecretKey))
+        .set("authorization", "Bearer " + jwt.sign({ userId: 1 }, jwtSecretKey))
         .end((err, res) => {
           res.should.be.an("object");
           let { status, message } = res.body;
@@ -627,9 +613,9 @@ describe("Manage users", () => {
         .delete(`/api/user/1`)
         .end((err, res) => {
           res.should.be.an("object");
-          let { status, message } = res.body;
+          let { status, error } = res.body;
           status.should.equals(401);
-          message.should.be
+          error.should.be
             .a("string")
             .that.equals(`Authorization header missing!`);
           done();
@@ -640,28 +626,28 @@ describe("Manage users", () => {
       chai
         .request(server)
         .delete(`/api/user/2`)
-        // .set("authorization", "Bearer " + jwt.sign({ userId: 1 }, jwtSecretKey))
+        .set("authorization", "Bearer " + jwt.sign({ userId: 1 }, jwtSecretKey))
         .end((err, res) => {
           res.should.be.an("object");
           let { status, message } = res.body;
           status.should.equals(403);
           message.should.be
             .a("string")
-            .that.equals(`Not authorized to delete the user.`);
+            .that.equals(`user not found or not authorized`);
           done();
         });
     });
 
-    it("TC-206-4 deleting user succesfull", (done) => {
+    it("TC-206-4 user verwijderd", (done) => {
       chai
         .request(server)
         .delete(`/api/user/1`)
         .set("authorization", "Bearer " + jwt.sign({ userId: 1 }, jwtSecretKey))
         .end((err, res) => {
           res.should.be.an("object");
-          let { status, result } = res.body;
+          let { status, message } = res.body;
           status.should.equals(200);
-          result.should.be
+          message.should.be
             .a("string")
             .that.equals(`User has been deleted`);
           done();
@@ -669,4 +655,3 @@ describe("Manage users", () => {
     });
   });
 });
-

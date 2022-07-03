@@ -20,6 +20,12 @@ module.exports = {
                 message: "user not found",
               });
             }
+            if(rows.length<1){
+              res.status(404).json({
+                status: 404,
+                message: "user not found",
+              });
+            }else{
             if (rows) {
               if (
                 rows &&
@@ -42,8 +48,8 @@ module.exports = {
                   function (err, token) {
                     logger.debug("User logged in, sending: ", userinfo);
                     res.status(200).json({
-                      statusCode: 200,
-                      results: { ...userinfo, token },
+                      status: 200,
+                      result: { ...userinfo, token },
                     });
                   }
                 );
@@ -55,6 +61,7 @@ module.exports = {
                 });
               }
             }
+            }
           }
         );
       }
@@ -63,20 +70,15 @@ module.exports = {
 
   validateLogin(req, res, next) {
     try {
-      assert(
-        typeof req.body.emailAdress === "string",
-        "email must be a string."
-      );
-      assert(
-        typeof req.body.password === "string",
-        "password must be a string."
-      );
+      assert(typeof req.body.emailAdress === "string", "email must be a string");
+      assert(typeof req.body.password === "string", "password must be a string");
       next();
-    } catch (ex) {
-      res.status(422).json({
-        error: ex.toString(),
-        datetime: new Date().toISOString(),
-      });
+    } catch (err) {
+      const error = {
+        status: 400,
+        result: err.message,
+      };
+      next(error);
     }
   },
 
@@ -87,7 +89,7 @@ module.exports = {
       logger.warn("Authorization header missing!");
       res.status(401).json({
         error: "Authorization header missing!",
-        datetime: new Date().toISOString(),
+        status: 401,
       });
     } else {
       // Strip the word 'Bearer ' from the headervalue
@@ -98,7 +100,7 @@ module.exports = {
           logger.warn("Not authorized");
           res.status(401).json({
             error: "Not authorized",
-            datetime: new Date().toISOString(),
+            status: 401,
           });
         }
         if (payload) {

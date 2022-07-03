@@ -24,11 +24,11 @@ let controller = {
       assert(typeof name === "string", "name must be a string");
       assert(typeof description === "string", "description must be a string");
       assert(typeof isActive === "boolean", "isActive must be a boolean");
-      assert(typeof isVega === "boolean", "isVega must be a string");
-      assert(typeof isVegan === "boolean", "isVegan must be a string");
+      assert(typeof isVega === "boolean", "isVega must be a boolean");
+      assert(typeof isVegan === "boolean", "isVegan must be a boolean");
       assert(
         typeof isToTakeHome === "boolean",
-        "isToTakeHome must be a string"
+        "isToTakeHome must be a boolean"
       );
       assert(typeof dateTime === "string", "dateTime must be a string");
       assert(typeof imageUrl === "string", "imageUrl must be a string");
@@ -72,7 +72,7 @@ let controller = {
       const price = meal.price;
 
       connection.query(
-        "INSERT INTO meal (cook, name, description, isActive, isVega, isVegan, isToTakeHome, dateTime, imageUrl, allergenes, maxAmountOfParticipants, price) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+        "INSERT INTO meal (cookId, name, description, isActive, isVega, isVegan, isToTakeHome, dateTime, imageUrl, allergenes, maxAmountOfParticipants, price) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
         [
           cook,
           name,
@@ -88,15 +88,16 @@ let controller = {
           price,
         ],
         function (error, results, fields) {
-          if (error) {
-            console.log(error);
-          } else {
-            console.log(results[1]);
+          connection.release();
+          if (error)  throw error
+          if(results.affectedRows>0){
+            let addedMeal = {id: results.insertId, ...req.body}
+            console.log(addedMeal);
             res.status(201).json({
               status: 201,
-              result: results[1],
+              result: addedMeal,
             });
-          }
+          }  
         }
       );
     });
@@ -156,8 +157,26 @@ let controller = {
   deleteMeal: (req, res, next) => {
     const Id = req.params.Id;
     dbconnection.getConnection(function (err, connection) {
-      if (err) throw err; // not connected!
-
+      //not connected
+      if (err) {
+        next(err);
+      }
+      connection.query(
+    "SELECT * FROM meal WHERE id = ?",
+    [Id],
+    function (error, results, fields) {
+      // When done with the connection, release it.
+      // connection.release();
+      // Handle error after the release.
+      if (error) throw error;
+      // succesfull query handlers
+      if (results.length > 0 && results[0].cookId != req.userId) {
+        return res.status(403).json({
+          status: 403,
+          message: `Meal not found or not authorized`,
+        });
+      } else {
+    
       // Use the connection
       connection.query(
         "DELETE FROM meal WHERE id=?",
@@ -176,14 +195,19 @@ let controller = {
               message: "Meal has been deleted",
             });
           } else {
-            res.status(400).json({
-              status: 400,
+            res.status(404).json({
+              status: 404,
               message: "Meal not found",
             });
           }
         }
       );
-    });
-  },
-};
+    }
+  }
+  );
+  });
+}
+}
+
+  
 module.exports = controller;

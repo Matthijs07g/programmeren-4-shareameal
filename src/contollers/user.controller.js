@@ -15,7 +15,7 @@ let controller = {
       assert(typeof city === "string", "City must be a string");
       assert(typeof password === "string", "Password must be a string");
       assert(typeof emailAdress === "string", "Emailadress must be a string");
-      assert(typeof phoneNumber ==="string", "Phonemumber isn't valid")
+      assert(typeof phoneNumber ==="string", "Phonenumber must be a string")
       next();
     } catch (err) {
       const error = {
@@ -45,7 +45,7 @@ let controller = {
       const phoneNumber = user.phoneNumber;
 
       connection.query(
-        "INSERT INTO user (firstName, lastName, street, city, password, emailAdress) VALUES(?, ?, ?, ?, ?, ?, ?); SELECT * FROM user WHERE emailAdress = ?",
+        "INSERT INTO user (firstName, lastName, street, city, password, emailAdress, phoneNumber) VALUES(?, ?, ?, ?, ?, ?, ?); SELECT * FROM user WHERE emailAdress = ?",
         [firstName, lastName, street, city, password, emailAdress, phoneNumber, emailAdress],
         function (error, results, fields) {
           if (error) {
@@ -66,11 +66,19 @@ let controller = {
     });
   },
   getAllUsers: (req, res) => {
+    let query = "SELECT * FROM user";
+    let {count, isActive, firstName} = req.query;
+    if (isActive && firstName) {query += ` WHERE firstName = '${firstName}' AND isActive = ${isActive}`;
+    } else if (isActive) {query += ` WHERE isActive = ${isActive}`;
+    } else if (firstName) {query += ` WHERE firstName = '${firstName}'`;
+    } if (count) {query += ` LIMIT ${count}`;
+    }
+
     dbconnection.getConnection(function (err, connection) {
       if (err) throw err; // not connected!
 
       // Use the connection
-      connection.query("SELECT * FROM user", function (error, results, fields) {
+      connection.query(query, function (error, results, fields) {
         // When done with the connection, release it.
         connection.release();
 
@@ -117,6 +125,36 @@ let controller = {
       );
     });
   },
+  getUserProfile:(req, res, next) =>{
+    const Id = req.userId;
+    dbconnection.getConnection(function (err, connection) {
+      if (err) throw err; // not connected!
+      connection.query(
+        "SELECT * FROM user WHERE id = ?;",
+        [Id],
+        function (error, results, fields) {
+          connection.release();
+          if (error) {
+            console.log(error);
+            next(error)
+            } else if (results.length > 0) {
+              console.log(results[1]);
+              res.status(200).json({
+                status: 200,
+                result: results[0],
+            });
+          } else {
+            res.status(401).json({
+              status: 401,
+              result: "unknown error",
+            });
+          }
+        }
+      );
+    });
+  },
+
+
   putUser: (req, res, next) => {
     const Id = req.params.Id;
     dbconnection.getConnection(function (err, connection) {
@@ -147,9 +185,10 @@ let controller = {
             });
           } else {
             console.log(results[1]);
+            let user = {id: req.params.userId, ...req.body}
             res.status(200).json({
               status: 200,
-              result: results[1],
+              message: user,
             });
           }
         }
@@ -157,14 +196,34 @@ let controller = {
     });
   },
   deleteUser: (req, res, next) => {
-    const Id = req.params.Id;
+    const delId = req.params.Id;
     dbconnection.getConnection(function (err, connection) {
-      if (err) throw err; // not connected!
-
+      //not connected
+      if (err) {
+        next(err);
+      }
+      connection.query(
+    "SELECT id FROM user WHERE id = ?",
+    [delId],
+    function (error, results, fields) {
+      // When done with the connection, release it.
+       
+      // Handle error after the release.
+      if (error) throw error;
+      // succesfull query handlers
+      if (results.length > 0 && delId != req.userId) {
+        connection.release();
+        return res.status(403).json({
+          status: 403,
+          message: `user not found or not authorized`,
+        });
+      
+      } else {
+        
       // Use the connection
       connection.query(
         "DELETE FROM user WHERE id=?",
-        [Id],
+        [delId],
         function (error, results, fields) {
           // When done with the connection, release it.
           connection.release();
@@ -186,7 +245,10 @@ let controller = {
           }
         }
       );
-    });
-  },
-};
+    }
+  }
+  );
+  });
+}
+}
 module.exports = controller;
