@@ -149,8 +149,7 @@ describe("Manage meals", () => {
             res.should.be.an("object");
             let { status, result } = res.body;
             status.should.equals(201);
-            result.should.be.a("object").that.contains({
-              cookId: 1,  
+            result.should.be.a("object").that.contains({  
               id: result.id,
               name: "AtestingMeal",
               description: "Dé pastaklassieker bij uitstek.",
