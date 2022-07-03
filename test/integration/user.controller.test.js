@@ -9,6 +9,7 @@ require("dotenv").config();
 const dbconnection = require("../../database/dbconnection");
 const jwt = require("jsonwebtoken");
 const { jwtSecretKey, logger } = require("../../src/config/config");
+const { expect } = require("chai")
 
 chai.should();
 chai.use(chaiHttp);
