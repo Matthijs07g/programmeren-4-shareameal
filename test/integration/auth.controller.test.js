@@ -66,7 +66,7 @@ const INSERT_MEALS =
       it("TC-101-1 verplicht veld ontbreekt", (done) => {
         chai
           .request(server)
-          .post("/api/auth/login")
+          .post("/auth/login")
           .send({
             emailAdress: "name@server.nl",
           })
@@ -84,7 +84,7 @@ const INSERT_MEALS =
       it("TC-101-2 niet valide email", (done) => {
         chai
           .request(server)
-          .post("/api/auth/login")
+          .post("/auth/login")
           .send({
             emailAdress: 1,
             password: "secret",
@@ -101,7 +101,7 @@ const INSERT_MEALS =
       it("TC-101-3 niet valide wachtwoord", (done) => {
         chai
           .request(server)
-          .post("/api/auth/login")
+          .post("/auth/login")
           .send({
             emailAdress: "name@server.nl",
             password: "test",
@@ -122,7 +122,7 @@ const INSERT_MEALS =
       it("TC-101-4 gebruiker bestaat niet", (done) => {
         chai
           .request(server)
-          .post("/api/auth/login")
+          .post("/auth/login")
           .send({
             emailAdress: "1234@server.nl",
             password: "secret",
@@ -140,7 +140,7 @@ const INSERT_MEALS =
       it("TC-101-5 succesvol ingelogd", (done) => {
         chai
           .request(server)
-          .post("/api/auth/login")
+          .post("/auth/login")
           .send({
             emailAdress: "name@server.nl",
             password: "secret",
