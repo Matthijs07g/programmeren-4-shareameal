@@ -63,14 +63,8 @@ module.exports = {
 
   validateLogin(req, res, next) {
     try {
-      assert(
-        typeof req.body.emailAdress === "string",
-        "email must be a string."
-      );
-      assert(
-        typeof req.body.password === "string",
-        "password must be a string."
-      );
+      assert(typeof req.body.emailAdress === "string", "email must be a string.");
+      assert(typeof req.body.password === "string", "password must be a string.");
       next();
     } catch (err) {
       const error = {

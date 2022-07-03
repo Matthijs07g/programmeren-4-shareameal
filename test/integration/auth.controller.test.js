@@ -86,7 +86,7 @@ const INSERT_MEALS =
           .request(server)
           .post("/api/auth/login")
           .send({
-            emailAdress: "@server",
+            emailAdress: 1,
             password: "secret",
           })
           .end((err, res) => {
