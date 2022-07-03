@@ -193,7 +193,7 @@ describe("Manage users", () => {
       chai
         .request(server)
         .get("/api/user?count=0")
-        //.set("authorization", "Bearer " + jwt.sign({ userId: 1 }, jwtSecretKey))
+        .set("authorization", "Bearer " + jwt.sign({ userId: 1 }, jwtSecretKey))
         .end((err, res) => {
           res.should.be.an("object");
           let { status, result } = res.body;
@@ -207,7 +207,7 @@ describe("Manage users", () => {
       chai
         .request(server)
         .get("/api/user?count=2")
-        // .set("authorization", "Bearer " + jwt.sign({ userId: 1 }, jwtSecretKey))
+        .set("authorization", "Bearer " + jwt.sign({ userId: 1 }, jwtSecretKey))
         .end((err, res) => {
           res.should.be.an("object");
           let { status, result } = res.body;
@@ -222,7 +222,7 @@ describe("Manage users", () => {
       chai
         .request(server)
         .get("/api/user?firstName=aaaaa")
-        // .set("authorization", "Bearer " + jwt.sign({ userId: 1 }, jwtSecretKey))
+        .set("authorization", "Bearer " + jwt.sign({ userId: 1 }, jwtSecretKey))
         .end((err, res) => {
           res.should.be.an("object");
           let { status, result } = res.body;
@@ -237,7 +237,7 @@ describe("Manage users", () => {
       chai
         .request(server)
         .get("/api/user?isActive=0")
-        // .set("authorization", "Bearer " + jwt.sign({ userId: 1 }, jwtSecretKey))
+        .set("authorization", "Bearer " + jwt.sign({ userId: 1 }, jwtSecretKey))
         .end((err, res) => {
           res.should.be.an("object");
           let { status, result } = res.body;
@@ -252,7 +252,7 @@ describe("Manage users", () => {
       chai
         .request(server)
         .get("/api/user?isActive=1")
-        // .set("authorization", "Bearer " + jwt.sign({ userId: 1 }, jwtSecretKey))
+        .set("authorization", "Bearer " + jwt.sign({ userId: 1 }, jwtSecretKey))
         .end((err, res) => {
           res.should.be.an("object");
           let { status, result } = res.body;
@@ -267,7 +267,7 @@ describe("Manage users", () => {
       chai
         .request(server)
         .get("/api/user?firstName=first")
-        // .set("authorization", "Bearer " + jwt.sign({ userId: 1 }, jwtSecretKey))
+        .set("authorization", "Bearer " + jwt.sign({ userId: 1 }, jwtSecretKey))
         .end((err, res) => {
           res.should.be.an("object");
           let { status, result } = res.body;
@@ -313,7 +313,7 @@ describe("Manage users", () => {
       chai
         .request(server)
         .get(`/api/user/profile`)
-        // .set("authorization", "Bearer " + jwt.sign({ userId: 2 }, jwtSecretKey) + "AN_UNVALID_PART")
+        .set("authorization", "Bearer " + jwt.sign({ userId: 2 }, jwtSecretKey) + "AN_UNVALID_PART")
         .end((err, res) => {
           res.should.be.an("object");
           let { status, message } = res.body;
@@ -327,7 +327,7 @@ describe("Manage users", () => {
       chai
         .request(server)
         .get(`/api/user/profile`)
-        // .set("authorization", "Bearer " + jwt.sign({ userId: 1 }, jwtSecretKey))
+        .set("authorization", "Bearer " + jwt.sign({ userId: 1 }, jwtSecretKey))
         .end((err, res) => {
           res.should.be.an("object");
           let { status, result } = res.body;
@@ -457,7 +457,7 @@ describe("Manage users", () => {
       chai
         .request(server)
         .put(`/api/user/1`)
-        // .set("authorization", "Bearer " + jwt.sign({ userId: 2 }, jwtSecretKey))
+        .set("authorization", "Bearer " + jwt.sign({ userId: 2 }, jwtSecretKey))
         .send({
           firstName: "Matthijs",
           lastName: "van Gastel",
@@ -480,7 +480,7 @@ describe("Manage users", () => {
       chai
         .request(server)
         .put(`/api/user/1`)
-        // .set("authorization", "Bearer " + jwt.sign({ userId: 2 }, jwtSecretKey))
+        .set("authorization", "Bearer " + jwt.sign({ userId: 2 }, jwtSecretKey))
         .send({
           firstName: "Matthijs",
           lastName: "van Gastel",
@@ -504,7 +504,7 @@ describe("Manage users", () => {
       chai
         .request(server)
         .put(`/api/user/99999999999`)
-        // .set("authorization", "Bearer " + jwt.sign({ userId: 2 }, jwtSecretKey))
+        .set("authorization", "Bearer " + jwt.sign({ userId: 2 }, jwtSecretKey))
         .send({
           firstName: "Matthijs",
           lastName: "van Gastel",
@@ -555,7 +555,7 @@ describe("Manage users", () => {
       chai
         .request(server)
         .put(`/api/user/1`)
-        // .set("authorization", "Bearer " + jwt.sign({ userId: 2 }, jwtSecretKey))
+        .set("authorization", "Bearer " + jwt.sign({ userId: 2 }, jwtSecretKey))
         .send({
           firstName: "Matthijs",
           lastName: "van Gastel",
@@ -609,7 +609,7 @@ describe("Manage users", () => {
       chai
         .request(server)
         .delete(`/api/user/99999999`)
-        // .set("authorization", "Bearer " + jwt.sign({ userId: 1 }, jwtSecretKey))
+        .set("authorization", "Bearer " + jwt.sign({ userId: 1 }, jwtSecretKey))
         .end((err, res) => {
           res.should.be.an("object");
           let { status, message } = res.body;
@@ -638,7 +638,7 @@ describe("Manage users", () => {
       chai
         .request(server)
         .delete(`/api/user/2`)
-        // .set("authorization", "Bearer " + jwt.sign({ userId: 1 }, jwtSecretKey))
+        .set("authorization", "Bearer " + jwt.sign({ userId: 1 }, jwtSecretKey))
         .end((err, res) => {
           res.should.be.an("object");
           let { status, message } = res.body;
