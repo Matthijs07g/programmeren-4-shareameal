@@ -352,25 +352,6 @@ describe("Manage users", () => {
         });
     });
   });
-
-  describe("UC-204 Details van gebruiker", () => {
-    beforeEach((done) => {
-      logger.debug("userTests: beforeEach called.");
-      dbconnection.getConnection(function (err, connection) {
-        if (err) throw err; // not connected!
-        connection.query(
-          CLEAR_DB + INSERT_USER,
-          function (error, results, fields) {
-            // When done with the connection, release it.
-            connection.release();
-
-            // Handle error after the release.
-            if (error) throw error;
-            done();
-          }
-        );
-      });
-    });
   describe("UC-204 Details van gebruiker /api/user/:Id", () => {
     beforeEach((done) => {
       dbconnection.getConnection(function (err, connection) {
@@ -664,12 +645,11 @@ describe("Manage users", () => {
           res.should.be.an("object");
           let { status, result } = res.body;
           status.should.equals(200);
-          result.should.be
+          message.should.be
             .a("string")
             .that.equals(`User has been deleted`);
           done();
         });
     });
   });
-});
 });

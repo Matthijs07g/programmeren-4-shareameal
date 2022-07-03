@@ -174,7 +174,7 @@ describe("Manage meals", () => {
         dbconnection.getConnection(function (err, connection) {
           if (err) throw err; // not connected!
           connection.query(
-            CLEAR_DB + INSERT_USER + INSERT_MEAL,
+            CLEAR_DB + INSERT_USER + INSERT_MEALS,
             function (error, results, fields) {
               // When done with the connection, release it.
               connection.release();
@@ -207,7 +207,7 @@ describe("Manage meals", () => {
         dbconnection.getConnection(function (err, connection) {
           if (err) throw err; // not connected!
           connection.query(
-            CLEAR_DB + INSERT_USER + INSERT_MEAL,
+            CLEAR_DB + INSERT_USER + INSERT_MEALS,
             function (error, results, fields) {
               // When done with the connection, release it.
               connection.release();
@@ -269,7 +269,7 @@ describe("Manage meals", () => {
         dbconnection.getConnection(function (err, connection) {
           if (err) throw err; // not connected!
           connection.query(
-            CLEAR_DB + INSERT_USER + INSERT_MEAL,
+            CLEAR_DB + INSERT_USER + INSERT_MEALS,
             function (error, results, fields) {
               // When done with the connection, release it.
               connection.release();
