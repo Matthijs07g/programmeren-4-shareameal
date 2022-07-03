@@ -382,7 +382,7 @@ describe("Manage users", () => {
           res.should.be.an("object");
           let { status, error } = res.body;
           status.should.equals(401);
-          error.should.be.a("string").that.equals("Token is invalid");
+          error.should.be.a("string").that.equals("Not authorized");
           done();
         });
     });
@@ -460,7 +460,7 @@ describe("Manage users", () => {
           res.should.be.an("object");
           let { status, result } = res.body;
           status.should.equals(400);
-          result.should.be.a("string").that.equals("Emailaddress must be a string");
+          result.should.be.a("string").that.equals("Emailadress must be a string");
           done();
         });
     });
