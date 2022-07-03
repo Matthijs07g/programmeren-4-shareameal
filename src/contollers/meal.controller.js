@@ -91,7 +91,7 @@ let controller = {
           connection.release();
           if (error)  throw error
           if(results.affectedRows>0){
-            let addedMeal = {id: results.insertId, cookId:cook, ...req.body}
+            let addedMeal = {id: results.insertId, cookId:results.cookId, ...req.body}
             console.log(addedMeal);
             res.status(201).json({
               status: 201,
